@@ -27,20 +27,21 @@ export default class AoC {
         return increasingDepthsNum;
     }
 
+    /**
+     * Sum a group of integers based on a window length
+     * @param depthArray
+     * @param startIndex
+     * @param windowLength
+     * @return {number}
+     */
     static sumGroup(depthArray, startIndex, windowLength) {
         let sum = 0;
         let i = 0;
-        // let logString = 'Start Index: ' + startIndex + ' Window Length: ' + windowLength + ' Elements in window: ';
         do {
             sum += depthArray[startIndex];
-            // logString += depthArray[startIndex] + '+ ';
-
             startIndex++;
             i++;
         } while (i < windowLength);
-
-        // console.log(logString + ' = ' + sum);
-
         return sum;
     }
 }
