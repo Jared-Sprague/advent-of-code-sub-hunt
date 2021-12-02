@@ -136,8 +136,10 @@ export default class MainScene extends Phaser.Scene {
 
         // ---- Advent of Code Data ----
         this.sonarDepths = this.cache.json.get('sonar-depths');
-        const numIncreasingDepths = AoC.getIncreasingDepthsNum(this.sonarDepths);
-        consola.info('[AoC] Num increasing depths: ', numIncreasingDepths)
+        const numIncreasingDepths = AoC.getIncreasingDepthsNum(this.sonarDepths, 1);
+        const numIncreasingGroups = AoC.getIncreasingDepthsNum(this.sonarDepths, 3);
+        consola.info('[AoC] Day 1 Part 1, Num increasing depths: ', numIncreasingDepths);
+        consola.info('[AoC] Day 1 Part 2, Num increasing groups: ', numIncreasingGroups);
 
         // Place Shipwreck and loot
         this.createShipwreckLoot();

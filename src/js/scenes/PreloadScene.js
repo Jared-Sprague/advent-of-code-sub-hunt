@@ -136,6 +136,7 @@ export default class PreloadScene extends Phaser.Scene {
 
         // Advent of Code data
         this.load.json('sonar-depths', 'assets/json/day1-1-sonar-depths.json');
+        this.load.json('sonar-depths-small', 'assets/json/day1-1-sonar-depths-small.json');
     }
 
     /**
