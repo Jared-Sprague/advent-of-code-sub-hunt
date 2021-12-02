@@ -1,9 +1,9 @@
 {
-    "name": "sub-hunt",
+    "name": "advent-of-code-sub-hunt",
     "version": "1.0.0",
     "author": "Jared Sprague",
     "license": "MIT",
-    "description": "Submarine game for Ludum Dare 48",
+    "description": "Game for Advent of Code 2021",
     "main": "src/js/Game.js",
     "scripts": {
         "start": "npm run build-dev",
@@ -16,7 +16,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/ScriptaGames/loot-race"
+        "url": "https://github.com/Jared-Sprague/advent-of-code-sub-hunt"
     },
     "devDependencies": {
         "@babel/core": "^7.13.1",
