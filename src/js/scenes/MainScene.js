@@ -4,6 +4,7 @@ import Boss from '../actors/Boss';
 
 const consola = require('consola').withTag('MainScene');
 import config from '../config';
+import AoC from '../lib/AoC';
 
 import Sub from '../actors/Sub';
 // import GlowFish from '../actors/GlowFish';
@@ -43,9 +44,11 @@ export default class MainScene extends Phaser.Scene {
         this.bargeSprite = this.add.sprite(1000, 80, 'barge-image');
         this.bargeSprite.scale = 1.2;
 
+        // Rock pillar shapes
         this.shapes = this.cache.json.get('shapes');
         this.matter.world.setBounds(0, 0, config.WORLD_WIDTH, config.WORLD_HEIGHT);
 
+        // Ground
         const ground = this.matter.add.sprite(0, 0, 'ground-image', null,
             { shape: this.shapes.ground });
         ground.setDepth(-2);
@@ -131,8 +134,14 @@ export default class MainScene extends Phaser.Scene {
             this.glowFishArray.push(glowFish);
         }
 
+        // ---- Advent of Code Data ----
+        this.sonarDepths = this.cache.json.get('sonar-depths');
+        const numIncreasingDepths = AoC.getIncreasingDepthsNum(this.sonarDepths);
+        consola.info('[AoC] Num increasing depths: ', numIncreasingDepths)
+
         // Place Shipwreck and loot
         this.createShipwreckLoot();
+
 
         // Collision checks
         this.collisionChecks();

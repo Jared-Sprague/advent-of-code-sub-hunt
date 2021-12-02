@@ -18,6 +18,7 @@
         "space-in-parens": "error",
         "no-multi-spaces": "off",
         "require-jsdoc": "off",
+        "valid-jsdoc": "off",
         "no-console": "off",
         "padded-blocks": "off",
         "new-cap": "off",

@@ -133,6 +133,9 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.audio('win-music', '../assets/sounds/ld48-victory.mp3');
         this.load.audio('lose-music', '../assets/sounds/ld48-gameover.mp3');
         this.load.audio('coins-collection', '../assets/sounds/coins-collection.mp3');
+
+        // Advent of Code data
+        this.load.json('sonar-depths', 'assets/json/day1-1-sonar-depths.json');
     }
 
     /**
