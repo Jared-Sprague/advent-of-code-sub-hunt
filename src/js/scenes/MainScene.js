@@ -134,12 +134,18 @@ export default class MainScene extends Phaser.Scene {
             this.glowFishArray.push(glowFish);
         }
 
-        // ---- Advent of Code Data ----
+        // ---- Advent of Code ----
+        // DAY 1
         this.sonarDepths = this.cache.json.get('sonar-depths');
         const numIncreasingDepths = AoC.getIncreasingDepthsNum(this.sonarDepths, 1);
         const numIncreasingGroups = AoC.getIncreasingDepthsNum(this.sonarDepths, 3);
         consola.info('[AoC] Day 1 Part 1, Num increasing depths: ', numIncreasingDepths);
         consola.info('[AoC] Day 1 Part 2, Num increasing groups: ', numIncreasingGroups);
+
+        // DAY 2
+        this.subDirections = this.cache.json.get('directions');
+        const directionsProduct = AoC.multiplyDirections(this.subDirections);
+        consola.info('[AoC] Day 1 Part 1, directions product: ', directionsProduct);
 
         // Place Shipwreck and loot
         this.createShipwreckLoot();

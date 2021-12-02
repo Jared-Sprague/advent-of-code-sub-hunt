@@ -10,17 +10,13 @@ export default class AoC {
         const windowLengthOffset = windowLength - 1;
 
         for (let i = 1; i < depthArray.length - windowLengthOffset; ++i) {
-            let previousGroupSum = 0;
-            let nextGroupSum = 0;
-
             // sum previous group
-            previousGroupSum = this.sumGroup(depthArray, i - 1, windowLength);
+            const previousGroupSum = this.sumGroup(depthArray, i - 1, windowLength);
 
             // sum next group
-            nextGroupSum = this.sumGroup(depthArray, i, windowLength);
+            const nextGroupSum = this.sumGroup(depthArray, i, windowLength);
 
             if (nextGroupSum > previousGroupSum) {
-                console.log(nextGroupSum + ' > ' + previousGroupSum + ' Increasing');
                 increasingDepthsNum++;
             }
         }
@@ -41,5 +37,35 @@ export default class AoC {
             i++;
         } while (i < windowLength);
         return sum;
+    }
+
+    /**
+     * DAY 2 - Part 1
+     * Sum forward and down directions then multiply them for a single number
+     */
+    static multiplyDirections(directionsArray) {
+        const forwardRegex = /forward (\d)/;
+        const downRegex = /down (\d)/;
+        const upRegex = /up (\d)/;
+
+        let forwardSum = 0;
+        let downSum = 0;
+        let aim = 0;
+
+        directionsArray.forEach((direction) => {
+            let match;
+            if (match = forwardRegex.exec(direction)) {
+                forwardSum += parseInt(match[1]);
+                downSum += aim * match[1];
+            }
+            else if (match = downRegex.exec(direction)) {
+                aim += parseInt(match[1]);
+            }
+            else if (match = upRegex.exec(direction)) {
+                aim -= parseInt(match[1]);
+            }
+        });
+
+        return forwardSum * downSum;
     }
 }
