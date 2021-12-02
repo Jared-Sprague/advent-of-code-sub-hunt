@@ -1,7 +1,8 @@
 export default class AoC {
 
     /**
-     * Day 1 - 1 puzzle to get the number of increasing depths
+     * Day 1 - Part 1 & 2
+     * Get the number of increasing depths
      * https://adventofcode.com/2021/day/1
      */
     static getIncreasingDepthsNum(depthArray, windowLength) {
@@ -28,11 +29,8 @@ export default class AoC {
     }
 
     /**
+     * DAY 1 - Part 1 & 2
      * Sum a group of integers based on a window length
-     * @param depthArray
-     * @param startIndex
-     * @param windowLength
-     * @return {number}
      */
     static sumGroup(depthArray, startIndex, windowLength) {
         let sum = 0;
