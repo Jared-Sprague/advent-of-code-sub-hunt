@@ -15,13 +15,13 @@ const config = {
     BOSS_REVEAL_DEPTH: 2300,
     BOSS_REVEAL_TIME : 7,
     FADE_DURATION    : 250,
-    ROCK_DAMAGE      : 0.25,
+    ROCK_DAMAGE      : 0.05,
     MAX_DARK_DEPTH   : 2300,
     MUSIC_VOLUME     : 0.5,
 };
 
 if (ENV === 'dev') {
-    config.LOG_LEVEL = 3;
+    config.LOG_LEVEL = Infinity;
 }
 else if (ENV === 'prod') {
     config.LOG_LEVEL = 1;

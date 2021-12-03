@@ -138,22 +138,15 @@ export default class MainScene extends Phaser.Scene {
         // ---- Advent of Code ----
         // DAY 1
         this.sonarDepths = this.cache.json.get('sonar-depths');
-        const numIncreasingDepths = AoC.getIncreasingDepthsNum(this.sonarDepths, 1);
-        const numIncreasingGroups = AoC.getIncreasingDepthsNum(this.sonarDepths, 3);
-        consola.info('[AoC] Day 1 Part 1, Num increasing depths: ', numIncreasingDepths);
-        consola.info('[AoC] Day 1 Part 2, Num increasing groups: ', numIncreasingGroups);
-        this.dayOneGift = this.add.sprite(700, 400, 'gift-1');
-        this.dayOneGift.setPipeline('Light2D');
-        this.dayOneGift.angle = 25;
-
+        this.gift1 = this.add.sprite(700, 400, 'gift-1');
+        this.gift1.setPipeline('Light2D');
+        this.gift1.angle = 25;
 
         // DAY 2
         this.subDirections = this.cache.json.get('directions');
-        const directionsProduct = AoC.multiplyDirections(this.subDirections);
-        consola.info('[AoC] Day 1 Part 1, directions product: ', directionsProduct);
-        this.dayTwoGift = this.add.sprite(760, 500, 'gift-2');
-        this.dayTwoGift.setPipeline('Light2D');
-        this.dayTwoGift.angle = 35;
+        this.gift2 = this.add.sprite(760, 500, 'gift-2');
+        this.gift2.setPipeline('Light2D');
+        this.gift2.angle = 35;
 
 
         // Place Shipwreck and loot
@@ -346,8 +339,22 @@ export default class MainScene extends Phaser.Scene {
     }
 
     handleGiftCollisions() {
-        if (this.checkSubGiftIntersect(this.dayOneGift)) {
-            consola.info('collided with gift 1');
+        if (this.gift1 && this.checkSubGiftIntersect(this.gift1)) {
+            consola.info('Collided with gift 1');
+            const numIncreasingDepths = AoC.getIncreasingDepthsNum(this.sonarDepths, 1);
+            const numIncreasingGroups = AoC.getIncreasingDepthsNum(this.sonarDepths, 3);
+            consola.info('[AoC] Day 1 Part 1, increasing depths: ', numIncreasingDepths);
+            consola.info('[AoC] Day 1 Part 1 & 2, increasing groups: ', numIncreasingGroups);
+            this.gift1.destroy();
+            this.gift1 = null;
+        }
+        else if (this.gift2 && this.checkSubGiftIntersect(this.gift2)) {
+            consola.info('Collided with gift 2');
+            AoC.multiplyDirections(this.subDirections);
+            const directionsProduct = AoC.multiplyDirections(this.subDirections);
+            consola.info('[AoC] Day 2 Part 2, directions product: ', directionsProduct);
+            this.gift2.destroy();
+            this.gift2 = null;
         }
     }
 
