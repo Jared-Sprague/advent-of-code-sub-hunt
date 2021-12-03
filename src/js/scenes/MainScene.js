@@ -162,7 +162,8 @@ export default class MainScene extends Phaser.Scene {
 
         // DAY 3
         this.diagData = this.cache.json.get('diag');
-        AoC.getPowerConsumption(this.diagData);
+        const diagReport = AoC.getDiagnosticReport(this.diagData);
+        consola.info('Diagnostics report:', diagReport);
 
 
         // Place Shipwreck and loot

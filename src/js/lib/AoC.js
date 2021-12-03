@@ -1,3 +1,10 @@
+import _ from './lodash';
+import config from '../config';
+const consola = require('consola').withTag('AoC');
+consola.level = config.LOG_LEVEL;
+
+export const BIT_LENGTH = 12;
+
 export default class AoC {
 
     /**
@@ -70,31 +77,26 @@ export default class AoC {
     }
 
     /**
-     * DAY 3 - Diagnostics
+     * DAY 3 - Get Diagnostic report
+     */
+    static getDiagnosticReport(diagArray) {
+        const powerConsumption = this.getPowerConsumption(diagArray);
+        const lifeSupportRating = this.getLifeSupportRating(diagArray);
+
+        return { 'powerConsumption': powerConsumption, 'lifeSupportRating': lifeSupportRating };
+    }
+
+    /**
+     * DAY 3 - Get the power consumption
      */
     static getPowerConsumption(diagArray) {
-        const bitPositions = [];
         let gamma = '';
         let epsilon = '';
 
-        // Initialize the bit counter
-        for (let i = 0; i < 12; ++i) {
-            bitPositions.push({
-                '1': 0,
-                '0': 0,
-            });
-        }
-
-        // count the bits
-        diagArray.forEach((data) => {
-            console.info(data);
-            for (let i = 0; i < 12; ++i) {
-                bitPositions[i][data[i]]++;
-            }
-        });
+        const bitPositions = this.getBitCount(diagArray);
 
         // calculate gamma and epsilon
-        for (let i = 0; i < 12; ++i) {
+        for (let i = 0; i < BIT_LENGTH; ++i) {
             if (bitPositions[i]['1'] > bitPositions[i]['0']) {
                 gamma += '1';
                 epsilon += '0';
@@ -107,10 +109,76 @@ export default class AoC {
 
         const gammaInt = parseInt(gamma, 2);
         const epsilonInt = parseInt(epsilon, 2);
-        console.info('gamma', gamma, gammaInt);
-        console.info('epsilon', epsilon, epsilonInt);
-        console.info('power consumption', gammaInt * epsilonInt);
+        consola.info('gamma', gamma, gammaInt);
+        consola.info('epsilon', epsilon, epsilonInt);
+        consola.info('power consumption', gammaInt * epsilonInt);
 
         return gammaInt * epsilonInt;
+    }
+
+    /**
+     * DAY 3 - Get the life support rating by multiplying Oxygen and CO2 ratings
+     */
+    static getLifeSupportRating(diagArray, bitPositions) {
+        const oxygenRating = this.filterData(diagArray, 0);
+        const co2Rating = this.filterData(diagArray, 0, true);
+        return parseInt(oxygenRating[0], 2) * parseInt(co2Rating[0], 2);
+    }
+
+    /**
+     * DAY 3 - Recursively filters an array based on most common bits in each position, until there is only 1 left
+     */
+    static filterData(diagArray, index, reverse = false) {
+        const bitPositions = this.getBitCount(diagArray);
+
+        const resultArray = _.filter(diagArray, (element) => {
+            if (!reverse) {
+                if (bitPositions[index]['1'] >= bitPositions[index]['0']) {
+                    return element[index] === '1';
+                }
+                else {
+                    return element[index] === '0';
+                }
+            }
+            else {
+                if (bitPositions[index]['0'] <= bitPositions[index]['1']) {
+                    return element[index] === '0';
+                }
+                else {
+                    return element[index] === '1';
+                }
+            }
+        });
+        consola.info('num results', resultArray.length);
+
+        if (index >= BIT_LENGTH - 1 || resultArray.length === 1) {
+            return resultArray;
+        }
+
+        return this.filterData(resultArray, ++index, reverse);
+    }
+
+    /**
+     * DAY 3 - Count the 1's and 0's in each position
+     */
+    static getBitCount(diagArray) {
+        const bitPositions = [];
+
+        // Initialize the bit counter
+        for (let i = 0; i < BIT_LENGTH; ++i) {
+            bitPositions.push({
+                '1': 0,
+                '0': 0,
+            });
+        }
+
+        // count the bits
+        diagArray.forEach((data) => {
+            for (let i = 0; i < BIT_LENGTH; ++i) {
+                bitPositions[i][data[i]]++;
+            }
+        });
+
+        return bitPositions;
     }
 }

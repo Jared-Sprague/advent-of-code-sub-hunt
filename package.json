@@ -39,6 +39,7 @@
     },
     "dependencies": {
         "consola": "^2.15.3",
+        "lodash": "^4.17.21",
         "phaser": "^3.54.0"
     }
 }
