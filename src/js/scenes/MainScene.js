@@ -142,17 +142,19 @@ export default class MainScene extends Phaser.Scene {
         const numIncreasingGroups = AoC.getIncreasingDepthsNum(this.sonarDepths, 3);
         consola.info('[AoC] Day 1 Part 1, Num increasing depths: ', numIncreasingDepths);
         consola.info('[AoC] Day 1 Part 2, Num increasing groups: ', numIncreasingGroups);
-        // this.dayOneGift = this.matter.add.sprite(750, 400, 'gift-green');
-        // this.dayOneGift.setPipeline('Light2D');
-        // this.dayOneGift.setCollisionGroup(1);
-        this.dayOneGift = this.add.sprite(700, 400, 'gift-green');
+        this.dayOneGift = this.add.sprite(700, 400, 'gift-1');
         this.dayOneGift.setPipeline('Light2D');
-        // this.dayOneGift.setCollisionGroup(1);
+        this.dayOneGift.angle = 25;
+
 
         // DAY 2
         this.subDirections = this.cache.json.get('directions');
         const directionsProduct = AoC.multiplyDirections(this.subDirections);
         consola.info('[AoC] Day 1 Part 1, directions product: ', directionsProduct);
+        this.dayTwoGift = this.add.sprite(760, 500, 'gift-2');
+        this.dayTwoGift.setPipeline('Light2D');
+        this.dayTwoGift.angle = 35;
+
 
         // Place Shipwreck and loot
         this.createShipwreckLoot();

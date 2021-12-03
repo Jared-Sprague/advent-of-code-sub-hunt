@@ -107,5 +107,9 @@ export default class MenuScene extends Phaser.Scene {
                 this.scale.startFullscreen();
             }
         }, this);
+
+        // Comment this out while not testing
+        this.events.emit('mainGameMusic');
+        this.scene.start('MainScene');
     }
 }

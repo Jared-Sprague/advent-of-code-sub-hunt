@@ -5,7 +5,7 @@ const config = {
     GAME_HEIGHT      : 576,
     WORLD_WIDTH      : 2000,
     WORLD_HEIGHT     : 3000,
-    DEBUG            : true,
+    DEBUG            : false,
     THRUST_POWER     : 0.00085,
     LIGHTS_ALWAYS_ON : false,
     INVULNERABLE     : false,

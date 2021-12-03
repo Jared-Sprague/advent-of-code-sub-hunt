@@ -74,7 +74,7 @@ export default class PreloadScene extends Phaser.Scene {
 
         // Static images
         this.load.image('ground-image', '../assets/images/ground.png');
-        this.load.image('sub-image', '../assets/images/Sub-Base.png');
+        this.load.image('sub-image', '../assets/images/elf-sub.png');
         this.load.image('sub-loot-image', '../assets/images/Sub_Loot.png');
         this.load.image('sub-damaged-image', '../assets/images/Sub-Base-damaged.png');
         this.load.image('sub-loot-damaged-image', '../assets/images/Sub-Loot-damaged.png');
@@ -102,7 +102,8 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image('victory_screen-text-image', '../assets/images/victory_screen-text.png');
         this.load.image('light-icon-image', '../assets/images/Light_Icon.png');
         this.load.image('health-icon-image', '../assets/images/Health_Icon.png');
-        this.load.image('gift-green', '../assets/images/gift-green.png');
+        this.load.image('gift-1', '../assets/images/gift-1.png');
+        this.load.image('gift-2', '../assets/images/gift-2.png');
 
         // Sprite sheets
         this.load.spritesheet('fullscreen', '../assets/images/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
