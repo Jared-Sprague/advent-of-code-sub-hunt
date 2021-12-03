@@ -166,13 +166,12 @@ export default class MainScene extends Phaser.Scene {
 
         // DAY 3
         this.diagData = this.cache.json.get('diag');
-        const diagReport = AoC.getDiagnosticReport(this.diagData);
-        consola.info('Diagnostics report:', diagReport);
-
+        this.gift3 = this.add.sprite(770, 715, 'gift-3');
+        this.gift3.setPipeline('Light2D');
+        this.gift3.angle = 10;
 
         // Place Shipwreck and loot
         this.createShipwreckLoot();
-
 
         // Collision checks
         this.collisionChecks();
@@ -400,20 +399,27 @@ export default class MainScene extends Phaser.Scene {
 
             // fake console output
             const div = document.getElementById('text');
-            // for (let i = 0; i < this.sonarDepths.length - 30; i += 2) {
-            //     let lines = '';
-            //     for (let j = 0; j < 30; ++j) {
-            //         lines += '<p>' + this.sonarDepths[i + j] + '</p>';
-            //     }
-            //     div.innerHTML = lines;
-            //     await sleep(0.2);
-            // }
             div.innerHTML = 'Sub instructions received Captain!';
 
             this.gift2.destroy();
             this.gift2 = null;
+        }
+        else if (this.gift3 && this.checkSubGiftIntersect(this.gift3)) {
+            consola.info('Collided with gift 3');
+            this.terminalDomElement.setX(this.sub.subContainer.x);
+            this.terminalDomElement.setY(this.sub.subContainer.y);
+            this.terminalDomElement.setVisible(true);
+            this.scene.pause();
 
+            const diagReport = AoC.getDiagnosticReport(this.diagData);
+            consola.info('Diagnostics report:', diagReport);
 
+            // fake console output
+            const div = document.getElementById('text');
+            div.innerHTML = 'Diagnostic Report parsed Captain!';
+
+            this.gift3.destroy();
+            this.gift3 = null;
         }
     }
 

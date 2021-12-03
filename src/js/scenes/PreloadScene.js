@@ -104,6 +104,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image('health-icon-image', '../assets/images/Health_Icon.png');
         this.load.image('gift-1', '../assets/images/gift-1.png');
         this.load.image('gift-2', '../assets/images/gift-2.png');
+        this.load.image('gift-3', '../assets/images/gift-3.png');
 
         // Sprite sheets
         this.load.spritesheet('fullscreen', '../assets/images/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
