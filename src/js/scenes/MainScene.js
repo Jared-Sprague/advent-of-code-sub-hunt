@@ -10,6 +10,10 @@ consola.level = config.LOG_LEVEL;
 import Sub from '../actors/Sub';
 // import GlowFish from '../actors/GlowFish';
 
+function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export default class MainScene extends Phaser.Scene {
 
     constructor() {
@@ -355,31 +359,61 @@ export default class MainScene extends Phaser.Scene {
         this.sub.hasWon = true;
     }
 
-    handleGiftCollisions() {
+    async handleGiftCollisions() {
         if (this.gift1 && this.checkSubGiftIntersect(this.gift1)) {
             consola.info('Collided with gift 1');
             this.terminalDomElement.setX(this.sub.subContainer.x);
             this.terminalDomElement.setY(this.sub.subContainer.y);
             this.terminalDomElement.setVisible(true);
+            this.scene.pause();
+
             const numIncreasingDepths = AoC.getIncreasingDepthsNum(this.sonarDepths, 1);
             const numIncreasingGroups = AoC.getIncreasingDepthsNum(this.sonarDepths, 3);
             consola.info('[AoC] Day 1 Part 1, increasing depths: ', numIncreasingDepths);
             consola.info('[AoC] Day 1 Part 1 & 2, increasing groups: ', numIncreasingGroups);
+
+            // fake console output
+            const div = document.getElementById('text');
+            // for (let i = 0; i < this.sonarDepths.length - 30; i += 2) {
+            //     let lines = '';
+            //     for (let j = 0; j < 30; ++j) {
+            //         lines += '<p>' + this.sonarDepths[i + j] + '</p>';
+            //     }
+            //     div.innerHTML = lines;
+            //     await sleep(0.2);
+            // }
+            div.innerHTML = 'Sonar depth mapping complete Captain!';
+
             this.gift1.destroy();
             this.gift1 = null;
-            this.scene.pause();
         }
         else if (this.gift2 && this.checkSubGiftIntersect(this.gift2)) {
             consola.info('Collided with gift 2');
             this.terminalDomElement.setX(this.sub.subContainer.x);
             this.terminalDomElement.setY(this.sub.subContainer.y);
             this.terminalDomElement.setVisible(true);
+            this.scene.pause();
+
             AoC.multiplyDirections(this.subDirections);
             const directionsProduct = AoC.multiplyDirections(this.subDirections);
             consola.info('[AoC] Day 2 Part 2, directions product: ', directionsProduct);
+
+            // fake console output
+            const div = document.getElementById('text');
+            // for (let i = 0; i < this.sonarDepths.length - 30; i += 2) {
+            //     let lines = '';
+            //     for (let j = 0; j < 30; ++j) {
+            //         lines += '<p>' + this.sonarDepths[i + j] + '</p>';
+            //     }
+            //     div.innerHTML = lines;
+            //     await sleep(0.2);
+            // }
+            div.innerHTML = 'Sub instructions received Captain!';
+
             this.gift2.destroy();
             this.gift2 = null;
-            this.scene.pause();
+
+
         }
     }
 
