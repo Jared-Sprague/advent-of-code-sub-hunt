@@ -68,4 +68,49 @@ export default class AoC {
 
         return forwardSum * downSum;
     }
+
+    /**
+     * DAY 3 - Diagnostics
+     */
+    static getPowerConsumption(diagArray) {
+        const bitPositions = [];
+        let gamma = '';
+        let epsilon = '';
+
+        // Initialize the bit counter
+        for (let i = 0; i < 12; ++i) {
+            bitPositions.push({
+                '1': 0,
+                '0': 0,
+            });
+        }
+
+        // count the bits
+        diagArray.forEach((data) => {
+            console.info(data);
+            for (let i = 0; i < 12; ++i) {
+                bitPositions[i][data[i]]++;
+            }
+        });
+
+        // calculate gamma and epsilon
+        for (let i = 0; i < 12; ++i) {
+            if (bitPositions[i]['1'] > bitPositions[i]['0']) {
+                gamma += '1';
+                epsilon += '0';
+            }
+            else {
+                gamma += '0';
+                epsilon += '1';
+            }
+        }
+
+        const gammaInt = parseInt(gamma, 2);
+        const epsilonInt = parseInt(epsilon, 2);
+        console.info('gamma', gamma, gammaInt);
+        console.info('epsilon', epsilon, epsilonInt);
+        console.info('power consumption', gammaInt * epsilonInt);
+
+        return gammaInt * epsilonInt;
+    }
 }

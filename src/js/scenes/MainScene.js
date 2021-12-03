@@ -160,6 +160,10 @@ export default class MainScene extends Phaser.Scene {
         this.gift2.setPipeline('Light2D');
         this.gift2.angle = 35;
 
+        // DAY 3
+        this.diagData = this.cache.json.get('diag');
+        AoC.getPowerConsumption(this.diagData);
+
 
         // Place Shipwreck and loot
         this.createShipwreckLoot();

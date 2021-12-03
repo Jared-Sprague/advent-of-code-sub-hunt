@@ -141,6 +141,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.json('sonar-depths', 'assets/json/day1-1-sonar-depths.json');
         this.load.json('sonar-depths-small', 'assets/json/day1-1-sonar-depths-small.json');
         this.load.json('directions', 'assets/json/day2-1-directions.json');
+        this.load.json('diag', 'assets/json/day3-diag.json');
     }
 
     /**
