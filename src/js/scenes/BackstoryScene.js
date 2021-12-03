@@ -3,6 +3,7 @@
 import config from '../config';
 
 const consola = require('consola').withTag('BackstoryScene');
+consola.level = config.LOG_LEVEL;
 
 /**
  * MenuScene is the scene of the main menu of the game
@@ -22,7 +23,7 @@ export default class BackstoryScene extends Phaser.Scene {
      * @param {object} data generic data to pass between scenes
      */
     create(data) {
-        consola.info('Create');
+        consola.log('Create');
         this.cameras.main.fadeIn(config.FADE_DURATION, 0, 0, 0);
 
         const backgroundImage = this.add.image(0, 0, 'backstory-image');

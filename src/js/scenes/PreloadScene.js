@@ -50,7 +50,7 @@ export default class PreloadScene extends Phaser.Scene {
 
         this.load.on('progress', (value) => {
             const percent = parseInt(value * 100) + '%';
-            consola.log('Loading..', percent);
+            consola.trace('Loading..', percent);
             percentText.setText(percent);
             progressBar.clear();
             progressBar.fillStyle(0xffffff, 1);
@@ -102,6 +102,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image('victory_screen-text-image', '../assets/images/victory_screen-text.png');
         this.load.image('light-icon-image', '../assets/images/Light_Icon.png');
         this.load.image('health-icon-image', '../assets/images/Health_Icon.png');
+        this.load.image('gift-green', '../assets/images/gift-green.png');
 
         // Sprite sheets
         this.load.spritesheet('fullscreen', '../assets/images/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });

@@ -3,6 +3,7 @@
 import config from '../config';
 
 const consola = require('consola').withTag('MenuScene');
+consola.level = config.LOG_LEVEL;
 
 /**
  * MenuScene is the scene of the main menu of the game
@@ -22,7 +23,7 @@ export default class MenuScene extends Phaser.Scene {
      * @param {object} data generic data to pass between scenes
      */
     create(data) {
-        consola.info('Create');
+        consola.log('Create');
 
         this.events.emit('mainMenuMusic');
 
@@ -46,7 +47,9 @@ export default class MenuScene extends Phaser.Scene {
             this.cameras.main.fadeOut(config.FADE_DURATION, 0, 0, 0);
 
             this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-                this.scene.start('BackstoryScene');
+                // this.scene.start('BackstoryScene');
+                this.events.emit('mainGameMusic');
+                this.scene.start('MainScene');
             });
         });
 

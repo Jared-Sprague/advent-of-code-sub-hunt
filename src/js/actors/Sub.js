@@ -3,6 +3,7 @@
 import config from '../config';
 
 const consola = require('consola').withTag('Sub');
+consola.level = config.LOG_LEVEL;
 
 export default class Sub extends Phaser.GameObjects.GameObject {
     constructor(config) {
@@ -58,7 +59,7 @@ export default class Sub extends Phaser.GameObjects.GameObject {
         if (this.lightIsOn() && !config.LIGHTS_ALWAYS_ON && !this.isDead()) {
             this.lightChargeLevel = Phaser.Math.Clamp(this.lightChargeLevel - .1, 0, 1);
             if (this.lightChargeLevel === 0) {
-                consola.info('out of power');
+                consola.log('out of power');
                 this.toggleLights();
             }
             this.scene.events.emit('lightChargeChanged', this.lightChargeLevel);
@@ -150,7 +151,7 @@ export default class Sub extends Phaser.GameObjects.GameObject {
             }
 
             if (this.health === 0) {
-                consola.info('dead');
+                consola.log('dead');
                 this.propSprite.anims.stop();
             }
         }

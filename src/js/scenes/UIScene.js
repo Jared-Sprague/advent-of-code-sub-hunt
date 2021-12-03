@@ -1,6 +1,8 @@
 /* global Phaser */
-const consola = require('consola').withTag('UIScene');
 import config from '../config';
+
+const consola = require('consola').withTag('UIScene');
+consola.level = config.LOG_LEVEL;
 
 export default class UIScene extends Phaser.Scene {
     constructor() {
@@ -8,7 +10,7 @@ export default class UIScene extends Phaser.Scene {
     }
 
     create() {
-        consola.info('Create');
+        consola.log('Create');
 
         this.scene.setVisible(false); // hide unless specifically set to visible
 

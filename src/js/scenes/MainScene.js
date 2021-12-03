@@ -1,10 +1,11 @@
 /* global Phaser */
 
 import Boss from '../actors/Boss';
-
-const consola = require('consola').withTag('MainScene');
 import config from '../config';
 import AoC from '../lib/AoC';
+
+const consola = require('consola').withTag('MainScene');
+consola.level = config.LOG_LEVEL;
 
 import Sub from '../actors/Sub';
 // import GlowFish from '../actors/GlowFish';
@@ -19,7 +20,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     create() {
-        consola.info('Create');
+        consola.log('Create');
         this.cameras.main.fadeIn(config.FADE_DURATION, 0, 0, 0);
 
         this.victory = false;
@@ -141,6 +142,12 @@ export default class MainScene extends Phaser.Scene {
         const numIncreasingGroups = AoC.getIncreasingDepthsNum(this.sonarDepths, 3);
         consola.info('[AoC] Day 1 Part 1, Num increasing depths: ', numIncreasingDepths);
         consola.info('[AoC] Day 1 Part 2, Num increasing groups: ', numIncreasingGroups);
+        // this.dayOneGift = this.matter.add.sprite(750, 400, 'gift-green');
+        // this.dayOneGift.setPipeline('Light2D');
+        // this.dayOneGift.setCollisionGroup(1);
+        this.dayOneGift = this.add.sprite(700, 400, 'gift-green');
+        this.dayOneGift.setPipeline('Light2D');
+        // this.dayOneGift.setCollisionGroup(1);
 
         // DAY 2
         this.subDirections = this.cache.json.get('directions');
@@ -261,6 +268,9 @@ export default class MainScene extends Phaser.Scene {
             }
         }, this);
 
+        // AoC gift collisions
+        this.handleGiftCollisions();
+
         const distance = Phaser.Math.Distance.BetweenPoints(this.sub.subContainer, this.bargeSprite);
         if (distance < 120 && this.sub.hasLoot) {
             this.deliverLoot();
@@ -331,5 +341,15 @@ export default class MainScene extends Phaser.Scene {
         this.scene.get('VictoryScene').show();
         this.events.emit('win');
         this.sub.hasWon = true;
+    }
+
+    handleGiftCollisions() {
+        if (this.checkSubGiftIntersect(this.dayOneGift)) {
+            consola.info('collided with gift 1');
+        }
+    }
+
+    checkSubGiftIntersect(giftSprite) {
+        return (Phaser.Geom.Intersects.RectangleToRectangle(this.sub.subSprite.getBounds(), giftSprite.getBounds()));
     }
 }

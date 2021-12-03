@@ -2,6 +2,7 @@
 
 import config from '../config';
 const consola = require('consola').withTag('VictoryScene');
+consola.level = config.LOG_LEVEL;
 
 export default class VictoryScene extends Phaser.Scene {
     constructor() {

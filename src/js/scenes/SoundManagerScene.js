@@ -3,6 +3,7 @@
 import config from '../config';
 
 const consola = require('consola').withTag('SoundManagerScene');
+consola.level = config.LOG_LEVEL;
 
 export default class SoundManagerScene extends Phaser.Scene {
     constructor() {
@@ -16,7 +17,7 @@ export default class SoundManagerScene extends Phaser.Scene {
     create() {
         if (config.DISABLE_SOUNDS) return;
 
-        consola.info('Creating Sound Manager');
+        consola.log('Create');
 
         this.miscSounds = [
             this.sound.add('bubble1'),
@@ -127,7 +128,7 @@ export default class SoundManagerScene extends Phaser.Scene {
     }
 
     startMainGameSounds() {
-        consola.log('playing main game sounds');
+        consola.info('playing main game sounds');
         this.menuMusic.stop();
         this.loseMusic.stop();
         this.winMusic.stop();

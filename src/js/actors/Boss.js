@@ -1,8 +1,10 @@
 /* global Phaser */
 
-const consola = require('consola').withTag('Boss');
-
+import config from '../config';
 import gameConfig from '../config';
+
+const consola = require('consola').withTag('Boss');
+consola.level = config.LOG_LEVEL;
 
 export default class Boss extends Phaser.GameObjects.GameObject {
     constructor(config) {

@@ -5,7 +5,7 @@ const config = {
     GAME_HEIGHT      : 576,
     WORLD_WIDTH      : 2000,
     WORLD_HEIGHT     : 3000,
-    DEBUG            : false,
+    DEBUG            : true,
     THRUST_POWER     : 0.00085,
     LIGHTS_ALWAYS_ON : false,
     INVULNERABLE     : false,
@@ -21,10 +21,10 @@ const config = {
 };
 
 if (ENV === 'dev') {
-    config.LOG_LEVEL = Infinity;
+    config.LOG_LEVEL = 3;
 }
 else if (ENV === 'prod') {
-    config.LOG_LEVEL = 3;
+    config.LOG_LEVEL = 1;
 }
 
 export default config;
