@@ -136,6 +136,18 @@ export default class MainScene extends Phaser.Scene {
         }
 
         // ---- Advent of Code ----
+        // Create terminal
+        this.terminalDomElement = this.add.dom(0, 0).createFromCache('terminal');
+        this.terminalDomElement.addListener('click');
+        this.terminalDomElement.on('click', (event) => {
+            if (event.target.name === 'closeButton') {
+                console.info('close button clicked');
+                this.terminalDomElement.setVisible(false);
+                this.scene.resume();
+            }
+        });
+        this.terminalDomElement.setVisible(false);
+
         // DAY 1
         this.sonarDepths = this.cache.json.get('sonar-depths');
         this.gift1 = this.add.sprite(700, 400, 'gift-1');
@@ -341,20 +353,28 @@ export default class MainScene extends Phaser.Scene {
     handleGiftCollisions() {
         if (this.gift1 && this.checkSubGiftIntersect(this.gift1)) {
             consola.info('Collided with gift 1');
+            this.terminalDomElement.setX(this.sub.subContainer.x);
+            this.terminalDomElement.setY(this.sub.subContainer.y);
+            this.terminalDomElement.setVisible(true);
             const numIncreasingDepths = AoC.getIncreasingDepthsNum(this.sonarDepths, 1);
             const numIncreasingGroups = AoC.getIncreasingDepthsNum(this.sonarDepths, 3);
             consola.info('[AoC] Day 1 Part 1, increasing depths: ', numIncreasingDepths);
             consola.info('[AoC] Day 1 Part 1 & 2, increasing groups: ', numIncreasingGroups);
             this.gift1.destroy();
             this.gift1 = null;
+            this.scene.pause();
         }
         else if (this.gift2 && this.checkSubGiftIntersect(this.gift2)) {
             consola.info('Collided with gift 2');
+            this.terminalDomElement.setX(this.sub.subContainer.x);
+            this.terminalDomElement.setY(this.sub.subContainer.y);
+            this.terminalDomElement.setVisible(true);
             AoC.multiplyDirections(this.subDirections);
             const directionsProduct = AoC.multiplyDirections(this.subDirections);
             consola.info('[AoC] Day 2 Part 2, directions product: ', directionsProduct);
             this.gift2.destroy();
             this.gift2 = null;
+            this.scene.pause();
         }
     }
 

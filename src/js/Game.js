@@ -20,10 +20,13 @@ export default class Game extends Phaser.Game {
             type : Phaser.AUTO,
             scale: {
                 mode      : Phaser.Scale.FIT,
-                parent    : 'phaser-game',
                 autoCenter: Phaser.Scale.CENTER_BOTH,
                 width     : config.GAME_WIDTH,
                 height    : config.GAME_HEIGHT,
+            },
+            parent: 'phaser-game',
+            dom   : {
+                createContainer: true,
             },
             physics: {
                 default: 'matter',
