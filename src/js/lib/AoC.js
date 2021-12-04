@@ -181,4 +181,92 @@ export default class AoC {
 
         return bitPositions;
     }
+
+    static playBingo(boardsArray) {
+        const numbers = '57,9,8,30,40,62,24,70,54,73,12,3,71,95,58,88,23,81,53,80,22,45,98,37,18,72,14,20,66,0,19,31,' +
+            '82,34,55,29,27,96,48,28,87,83,36,26,63,21,5,46,33,86,32,56,6,38,52,16,41,74,99,77,13,35,65,4,78,91,90,43,' +
+            '1,2,64,60,94,85,61,84,42,76,68,10,49,89,11,17,79,69,39,50,25,51,47,93,44,92,59,75,7,97,67,15';
+        const numbersArray = numbers.split(',');
+
+        const boardObjects = [];
+
+        // initialize boards
+        boardsArray.forEach((board) => {
+            boardObjects.push({
+                rowTally: {
+                    '0': 0,
+                    '1': 0,
+                    '2': 0,
+                    '3': 0,
+                    '4': 0,
+                },
+                colTally: {
+                    '0': 0,
+                    '1': 0,
+                    '2': 0,
+                    '3': 0,
+                    '4': 0,
+                },
+                boardGrid    : board,
+                markedNumbers: [],
+            });
+        });
+
+        const winningBoards = [];
+
+        for (let i = 0; i < numbersArray.length; ++i) {
+            const number = parseInt(numbersArray[i]);
+
+            if (winningBoards.length < 100) {
+                boardObjects.forEach((board, index) => {
+                    // search the board for any occurrence of that number
+                    for (let j = 0; j < board.boardGrid.length; ++j) {
+                        for (let k = 0; k < 5; ++k) {
+                            if (board.boardGrid[j][k] === number) {
+                                // consola.info('board:', index, 'matched:', number, 'row:', j, 'col:', k);
+                                board.rowTally[j]++;
+                                board.colTally[k]++;
+                                board.markedNumbers.push(number);
+
+                                if (board.rowTally[j] === 5 || board.colTally[k] === 5) {
+                                    if (!winningBoards.includes(index)) {
+                                        // Add to winning boards
+                                        const sumUnmarked = this.sumUnmarkedNumbers(board);
+                                        winningBoards.push(index);
+                                        if (winningBoards.length === 1) {
+                                            consola.log('FIRST BINGO! board:', index, 'sum:', sumUnmarked, 'number:', number, 'winning code:', sumUnmarked * number);
+                                        }
+                                        else if (winningBoards.length === 100) {
+                                            consola.log('LAST BINGO! board:', index, 'sum:', sumUnmarked, 'number:', number, 'winning code:', sumUnmarked * number);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (winningBoards.length === 100) {
+                            break;
+                        }
+                    }
+                });
+            }
+        }
+
+        consola.info('num bingo boards:', boardsArray.length);
+
+        return 123;
+    }
+
+    static sumUnmarkedNumbers(board) {
+        let unmarkedSum = 0;
+        for (let i = 0; i < 5; ++i) {
+            for (let j = 0; j < 5; ++j) {
+                if (!board.markedNumbers.includes(board.boardGrid[i][j])) {
+                    unmarkedSum += board.boardGrid[i][j];
+                }
+            }
+        }
+        return unmarkedSum;
+    }
 }

@@ -105,6 +105,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image('gift-1', '../assets/images/gift-1.png');
         this.load.image('gift-2', '../assets/images/gift-2.png');
         this.load.image('gift-3', '../assets/images/gift-3.png');
+        this.load.image('gift-4', '../assets/images/gift-4.png');
 
         // Sprite sheets
         this.load.spritesheet('fullscreen', '../assets/images/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
@@ -143,6 +144,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.json('sonar-depths-small', 'assets/json/day1-1-sonar-depths-small.json');
         this.load.json('directions', 'assets/json/day2-1-directions.json');
         this.load.json('diag', 'assets/json/day3-diag.json');
+        this.load.json('bingo-boards', 'assets/json/day4-bingo.json');
     }
 
     /**

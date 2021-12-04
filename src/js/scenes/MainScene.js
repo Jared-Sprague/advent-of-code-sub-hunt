@@ -176,6 +176,14 @@ export default class MainScene extends Phaser.Scene {
         this.gift3.setPipeline('Light2D');
         this.gift3.angle = 10;
 
+        // DAY 4
+        this.bingoBoards = this.cache.json.get('bingo-boards');
+        this.gift4 = this.add.sprite(850, 900, 'gift-4');
+        this.gift4.setPipeline('Light2D');
+        this.gift4.angle = 10;
+        const winningNumber = AoC.playBingo(this.bingoBoards);
+        consola.info('Bingo winning number:', winningNumber);
+
         // Place Shipwreck and loot
         this.createShipwreckLoot();
 
@@ -421,6 +429,23 @@ export default class MainScene extends Phaser.Scene {
 
             this.gift3.destroy();
             this.gift3 = null;
+        }
+        else if (this.gift4 && this.checkSubGiftIntersect(this.gift4)) {
+            consola.info('Collided with gift 4');
+            this.terminalDomElement.setX(this.sub.subContainer.x);
+            this.terminalDomElement.setY(this.sub.subContainer.y);
+            this.terminalDomElement.setVisible(true);
+            this.scene.pause();
+
+            const winningNumber = AoC.playBingo(this.bingoBoards);
+            consola.log('Winning number:', winningNumber);
+
+            // fake console output
+            const div = document.getElementById('text');
+            div.innerHTML = 'You beat that squid good in Bingo Captain!';
+
+            this.gift4.destroy();
+            this.gift4 = null;
         }
     }
 
