@@ -139,13 +139,19 @@ export default class MainScene extends Phaser.Scene {
             this.glowFishArray.push(glowFish);
         }
 
+        this.input.on('pointerdown', (pointer) => {
+            if (!this.sub.isDead() && !this.sub.disabled) {
+                this.sub.toggleLights();
+            }
+        });
+
         // ---- Advent of Code ----
         // Create terminal
         this.terminalDomElement = this.add.dom(0, 0).createFromCache('terminal');
         this.terminalDomElement.addListener('click');
         this.terminalDomElement.on('click', (event) => {
             if (event.target.name === 'closeButton') {
-                console.info('close button clicked');
+                consola.info('close button clicked');
                 this.terminalDomElement.setVisible(false);
                 this.scene.resume();
             }
@@ -181,11 +187,6 @@ export default class MainScene extends Phaser.Scene {
         this.cameras.main.startFollow(this.sub.subMatterContainer, false, 0.05, 0.05);
         this.cameras.main.setBackgroundColor(0x004080);
 
-        this.input.on('pointerdown', (pointer) => {
-            if (!this.sub.isDead() && !this.sub.disabled) {
-                this.sub.toggleLights();
-            }
-        });
 
         this.keys = this.input.keyboard.addKeys('W,S,A,D');
     }
@@ -368,8 +369,8 @@ export default class MainScene extends Phaser.Scene {
 
             const numIncreasingDepths = AoC.getIncreasingDepthsNum(this.sonarDepths, 1);
             const numIncreasingGroups = AoC.getIncreasingDepthsNum(this.sonarDepths, 3);
-            consola.info('[AoC] Day 1 Part 1, increasing depths: ', numIncreasingDepths);
-            consola.info('[AoC] Day 1 Part 1 & 2, increasing groups: ', numIncreasingGroups);
+            consola.log('[AoC] Day 1 Part 1, increasing depths: ', numIncreasingDepths);
+            consola.log('[AoC] Day 1 Part 2, increasing groups: ', numIncreasingGroups);
 
             // fake console output
             const div = document.getElementById('text');
@@ -395,7 +396,7 @@ export default class MainScene extends Phaser.Scene {
 
             AoC.multiplyDirections(this.subDirections);
             const directionsProduct = AoC.multiplyDirections(this.subDirections);
-            consola.info('[AoC] Day 2 Part 2, directions product: ', directionsProduct);
+            consola.log('[AoC] Day 2 Part 2, directions product: ', directionsProduct);
 
             // fake console output
             const div = document.getElementById('text');
@@ -412,7 +413,7 @@ export default class MainScene extends Phaser.Scene {
             this.scene.pause();
 
             const diagReport = AoC.getDiagnosticReport(this.diagData);
-            consola.info('Diagnostics report:', diagReport);
+            consola.log('Diagnostics report:', diagReport);
 
             // fake console output
             const div = document.getElementById('text');
@@ -424,6 +425,6 @@ export default class MainScene extends Phaser.Scene {
     }
 
     checkSubGiftIntersect(giftSprite) {
-        return (Phaser.Geom.Intersects.RectangleToRectangle(this.sub.subSprite.getBounds(), giftSprite.getBounds()));
+        return (Phaser.Geom.Intersects.RectangleToRectangle(this.sub.plunger.getBounds(), giftSprite.getBounds()));
     }
 }

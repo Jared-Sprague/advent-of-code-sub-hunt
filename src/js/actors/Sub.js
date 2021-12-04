@@ -47,6 +47,7 @@ export default class Sub extends Phaser.GameObjects.GameObject {
         });
 
         this.createLights(config.scene);
+        this.toggleLights(); // Start with lights on
 
         // this.cursorKeys = this.scene.input.keyboard.createCursorKeys();
         const keyObj = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
