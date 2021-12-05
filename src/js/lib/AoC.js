@@ -272,4 +272,92 @@ export default class AoC {
         }
         return unmarkedSum;
     }
+
+    static getLineIntersects(lines) {
+        const pointCounter = {};
+        const linesArray = [];
+        const pointsRegex = /(\d+,\d+) -> (\d+,\d+)/;
+        let match;
+        let totalIntersectingCount = 0;
+
+        // Parse the input
+        lines.split('\n').forEach((line) => {
+            if (match = pointsRegex.exec(line)) {
+                const point1 = match[1].split(',');
+                const point2 = match[2].split(',');
+                linesArray.push({
+                    x1: point1[0],
+                    y1: point1[1],
+                    x2: point2[0],
+                    y2: point2[1],
+                });
+            }
+        });
+
+        // Iterate over lines and increment point intersects
+        linesArray.forEach((line) => {
+            // only consider horizontal and vertical
+            if (line.x1 === line.x2 || line.y1 === line.y2) {
+                const axis = (line.x1 === line.x2) ? 'y' : 'x';
+                let staticValue;
+                let deltaStart;
+                let deltaEnd;
+                if (axis === 'y') {
+                    staticValue = line.x1;
+                    if (line.y1 < line.y2) {
+                        deltaStart = line.y1;
+                        deltaEnd = line.y2;
+                    }
+                    else {
+                        deltaStart = line.y2;
+                        deltaEnd = line.y1;
+                    }
+                }
+                else {
+                    staticValue = line.y1;
+                    if (line.x1 < line.x2) {
+                        deltaStart = line.x1;
+                        deltaEnd = line.x2;
+                    }
+                    else {
+                        deltaStart = line.x2;
+                        deltaEnd = line.x1;
+                    }
+                }
+
+                // Now calculate the line points and increment the counter
+                for (let i = deltaStart; i <= deltaEnd; ++i) {
+                    if (axis === 'y') {
+                        const pointKey = '' + staticValue + ',' + i;
+                        if (pointCounter[pointKey]) {
+                            pointCounter[pointKey]++;
+                        }
+                        else {
+                            pointCounter[pointKey] = 1;
+                        }
+                    }
+                    else {
+                        const pointKey = '' + i + ',' + staticValue;
+                        if (pointCounter[pointKey]) {
+                            pointCounter[pointKey]++;
+                        }
+                        else {
+                            pointCounter[pointKey] = 1;
+                        }
+                    }
+                }
+            }
+        });
+
+        // Now count how many points overlap
+        for (const point in pointCounter) {
+            if (pointCounter[point] > 1) {
+                totalIntersectingCount++;
+            }
+        }
+
+        consola.info('num point groups:', linesArray.length);
+        consola.info('num line points total:', Object.getOwnPropertyNames(pointCounter).length);
+        consola.info('total intersecting points:', totalIntersectingCount);
+    }
 }
