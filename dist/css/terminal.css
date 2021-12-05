@@ -1,0 +1,72 @@
+button {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    padding: 0;
+    margin: 0;
+}
+
+.window-header {
+    background-color: #292929;
+    height: 25px;
+}
+
+.window-controls {
+    display: flex;
+    height: 100%;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.window-controls .control-item {
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    color: #fff;
+    transition: all ease-in .15s;
+    cursor: pointer;
+}
+
+.control-item.control-close {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+}
+
+
+#terminal {
+    background-color: black;
+    background-image: radial-gradient(
+            rgba(0, 150, 0, 0.75), black 120%
+    );
+    height: 20vmin;
+    width: 40vmin;
+    margin: 0;
+    overflow: hidden;
+    /*padding: 2rem;*/
+    color: white;
+    font: 1.0rem Inconsolata, monospace;
+    text-shadow: 0 0 5px #C8C8C8;
+
+    border-radius: 3px;
+
+    border-left: 3px solid #292929;
+    border-right: 3px solid #292929;
+    border-bottom: 3px solid #292929;
+
+    line-height: 0;
+}
+
+#text {
+    padding-top: 20px;
+    padding-left: 10px;
+}
+
+
+::selection {
+    background: #0080FF;
+    text-shadow: none;
+}
