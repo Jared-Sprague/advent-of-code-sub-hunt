@@ -28,6 +28,8 @@ export default class AoC {
             }
         }
 
+        consola.info('[DAY 1] Increasing depths:', increasingDepthsNum);
+
         return increasingDepthsNum;
     }
 
@@ -73,7 +75,9 @@ export default class AoC {
             }
         });
 
-        return forwardSum * downSum;
+        const directionsSum = forwardSum * downSum;
+        consola.info('[DAY 2-2] Directions sum:', directionsSum);
+        return directionsSum;
     }
 
     /**
@@ -111,7 +115,7 @@ export default class AoC {
         const epsilonInt = parseInt(epsilon, 2);
         consola.info('gamma', gamma, gammaInt);
         consola.info('epsilon', epsilon, epsilonInt);
-        consola.info('power consumption', gammaInt * epsilonInt);
+        consola.info('[DAY 3] power consumption', gammaInt * epsilonInt);
 
         return gammaInt * epsilonInt;
     }
@@ -122,7 +126,9 @@ export default class AoC {
     static getLifeSupportRating(diagArray, bitPositions) {
         const oxygenRating = this.filterData(diagArray, 0);
         const co2Rating = this.filterData(diagArray, 0, true);
-        return parseInt(oxygenRating[0], 2) * parseInt(co2Rating[0], 2);
+        const lifeSupportRating = parseInt(oxygenRating[0], 2) * parseInt(co2Rating[0], 2);
+        consola.info('[DAY 3] Life support rating:', lifeSupportRating);
+        return lifeSupportRating;
     }
 
     /**
@@ -190,7 +196,7 @@ export default class AoC {
             '82,34,55,29,27,96,48,28,87,83,36,26,63,21,5,46,33,86,32,56,6,38,52,16,41,74,99,77,13,35,65,4,78,91,90,43,' +
             '1,2,64,60,94,85,61,84,42,76,68,10,49,89,11,17,79,69,39,50,25,51,47,93,44,92,59,75,7,97,67,15';
         const numbersArray = numbers.split(',');
-
+        const firstLastBoard = {};
         const boardObjects = [];
 
         // initialize boards
@@ -237,10 +243,12 @@ export default class AoC {
                                         const sumUnmarked = this.sumUnmarkedNumbers(board);
                                         winningBoards.push(index);
                                         if (winningBoards.length === 1) {
-                                            consola.log('FIRST BINGO! board:', index, 'sum:', sumUnmarked, 'number:', number, 'winning code:', sumUnmarked * number);
+                                            firstLastBoard.first = sumUnmarked * number;
+                                            consola.info('[DAY 4] FIRST BINGO! board:', index, 'sum:', sumUnmarked, 'number:', number, 'winning code:', firstLastBoard.first);
                                         }
                                         else if (winningBoards.length === 100) {
-                                            consola.log('LAST BINGO! board:', index, 'sum:', sumUnmarked, 'number:', number, 'winning code:', sumUnmarked * number);
+                                            firstLastBoard.last = sumUnmarked * number;
+                                            consola.info('[DAY 4] LAST BINGO! board:', index, 'sum:', sumUnmarked, 'number:', number, 'winning code:', firstLastBoard.last);
                                             break;
                                         }
                                     }
@@ -258,7 +266,7 @@ export default class AoC {
 
         consola.info('num bingo boards:', boardsArray.length);
 
-        return 123;
+        return firstLastBoard;
     }
 
     static sumUnmarkedNumbers(board) {
@@ -386,7 +394,9 @@ export default class AoC {
 
         consola.info('num point groups:', linesArray.length);
         consola.info('num line points total:', Object.getOwnPropertyNames(this.pointCounter).length);
-        consola.info('total intersecting points:', totalIntersectingCount);
+        consola.info('[DAY 5] total intersecting points:', totalIntersectingCount);
+
+        return totalIntersectingCount;
     }
 
     static incrementPointCounter(pointKey) {
