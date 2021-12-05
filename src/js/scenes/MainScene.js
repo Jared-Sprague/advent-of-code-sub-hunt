@@ -53,7 +53,7 @@ export default class MainScene extends Phaser.Scene {
         this.shapes = this.cache.json.get('shapes');
         this.matter.world.setBounds(0, 0, config.WORLD_WIDTH, config.WORLD_HEIGHT);
 
-        // Ground
+        // Ground sprite
         const ground = this.matter.add.sprite(0, 0, 'ground-image', null,
             { shape: this.shapes.ground });
         ground.setDepth(-2);
