@@ -169,8 +169,6 @@ export default class MainScene extends Phaser.Scene {
         this.gift4 = this.add.sprite(850, 900, 'gift-4');
         this.gift4.setPipeline('Light2D');
         this.gift4.angle = 10;
-        const winningNumber = AoC.playBingo(this.bingoBoards);
-        consola.info('Bingo winning number:', winningNumber);
 
         // Place Shipwreck and loot
         this.createShipwreckLoot();
