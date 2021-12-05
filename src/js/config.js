@@ -25,7 +25,7 @@ if (ENV === 'dev') {
     config.LOG_LEVEL = Infinity;
 }
 else if (ENV === 'prod') {
-    config.LOG_LEVEL = 3;
+    config.LOG_LEVEL = 2;
 }
 
 export default config;

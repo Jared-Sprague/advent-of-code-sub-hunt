@@ -28,6 +28,8 @@ export default class AoC {
             }
         }
 
+        consola.info('[DAY 1] Increasing depths:', increasingDepthsNum);
+
         return increasingDepthsNum;
     }
 
@@ -73,7 +75,9 @@ export default class AoC {
             }
         });
 
-        return forwardSum * downSum;
+        const directionsSum = forwardSum * downSum;
+        consola.info('[DAY 2-2] Directions sum:', directionsSum);
+        return directionsSum;
     }
 
     /**
@@ -111,7 +115,7 @@ export default class AoC {
         const epsilonInt = parseInt(epsilon, 2);
         consola.info('gamma', gamma, gammaInt);
         consola.info('epsilon', epsilon, epsilonInt);
-        consola.info('power consumption', gammaInt * epsilonInt);
+        consola.info('[DAY 3] power consumption', gammaInt * epsilonInt);
 
         return gammaInt * epsilonInt;
     }
@@ -122,7 +126,9 @@ export default class AoC {
     static getLifeSupportRating(diagArray, bitPositions) {
         const oxygenRating = this.filterData(diagArray, 0);
         const co2Rating = this.filterData(diagArray, 0, true);
-        return parseInt(oxygenRating[0], 2) * parseInt(co2Rating[0], 2);
+        const lifeSupportRating = parseInt(oxygenRating[0], 2) * parseInt(co2Rating[0], 2);
+        consola.info('[DAY 3] Life support rating:', lifeSupportRating);
+        return lifeSupportRating;
     }
 
     /**
@@ -190,7 +196,7 @@ export default class AoC {
             '82,34,55,29,27,96,48,28,87,83,36,26,63,21,5,46,33,86,32,56,6,38,52,16,41,74,99,77,13,35,65,4,78,91,90,43,' +
             '1,2,64,60,94,85,61,84,42,76,68,10,49,89,11,17,79,69,39,50,25,51,47,93,44,92,59,75,7,97,67,15';
         const numbersArray = numbers.split(',');
-
+        const firstLastBoard = {};
         const boardObjects = [];
 
         // initialize boards
@@ -237,10 +243,12 @@ export default class AoC {
                                         const sumUnmarked = this.sumUnmarkedNumbers(board);
                                         winningBoards.push(index);
                                         if (winningBoards.length === 1) {
-                                            consola.log('FIRST BINGO! board:', index, 'sum:', sumUnmarked, 'number:', number, 'winning code:', sumUnmarked * number);
+                                            firstLastBoard.first = sumUnmarked * number;
+                                            consola.info('[DAY 4] FIRST BINGO! board:', index, 'sum:', sumUnmarked, 'number:', number, 'winning code:', firstLastBoard.first);
                                         }
                                         else if (winningBoards.length === 100) {
-                                            consola.log('LAST BINGO! board:', index, 'sum:', sumUnmarked, 'number:', number, 'winning code:', sumUnmarked * number);
+                                            firstLastBoard.last = sumUnmarked * number;
+                                            consola.info('[DAY 4] LAST BINGO! board:', index, 'sum:', sumUnmarked, 'number:', number, 'winning code:', firstLastBoard.last);
                                             break;
                                         }
                                     }
@@ -258,7 +266,7 @@ export default class AoC {
 
         consola.info('num bingo boards:', boardsArray.length);
 
-        return 123;
+        return firstLastBoard;
     }
 
     static sumUnmarkedNumbers(board) {
@@ -271,5 +279,132 @@ export default class AoC {
             }
         }
         return unmarkedSum;
+    }
+
+    // DAY 5 - Counting line intersects
+    static getLineIntersects(lines, includeDiagonal = false) {
+        this.pointCounter = {};
+        const linesArray = [];
+        const pointsRegex = /(\d+,\d+) -> (\d+,\d+)/;
+        let match;
+        let totalIntersectingCount = 0;
+
+        // Parse the input
+        lines.split('\n').forEach((line) => {
+            if (match = pointsRegex.exec(line)) {
+                const point1 = match[1].split(',');
+                const point2 = match[2].split(',');
+                linesArray.push({
+                    x1: parseInt(point1[0]),
+                    y1: parseInt(point1[1]),
+                    x2: parseInt(point2[0]),
+                    y2: parseInt(point2[1]),
+                });
+            }
+        });
+
+        // Iterate over lines and increment point intersects
+        linesArray.forEach((line) => {
+            // only consider horizontal and vertical
+            if ((line.x1 === line.x2 || line.y1 === line.y2) || includeDiagonal) {
+                let axis;
+                let staticValue;
+                let deltaStart;
+                let deltaEnd;
+                let delta;
+
+                if (line.x1 === line.x2) {
+                    axis = 'y';
+                    staticValue = line.x1;
+                    if (line.y1 < line.y2) {
+                        deltaStart = line.y1;
+                        deltaEnd = line.y2;
+                    }
+                    else {
+                        deltaStart = line.y2;
+                        deltaEnd = line.y1;
+                    }
+                }
+                else if (line.y1 === line.y2) {
+                    axis = 'x';
+                    staticValue = line.y1;
+                    if (line.x1 < line.x2) {
+                        deltaStart = line.x1;
+                        deltaEnd = line.x2;
+                    }
+                    else {
+                        deltaStart = line.x2;
+                        deltaEnd = line.x1;
+                    }
+                }
+                else {
+                    axis = 'x,y';
+                    if (line.x1 < line.x2) {
+                        delta = line.x2 - line.x1;
+                    }
+                    else {
+                        delta = line.x1 - line.x2;
+                    }
+                }
+
+                // Now calculate the line points and increment the counter
+                if (axis !== 'x,y') {
+                    for (let i = deltaStart; i <= deltaEnd; ++i) {
+                        if (axis === 'y') {
+                            const pointKey = '' + staticValue + ',' + i;
+                            this.incrementPointCounter(pointKey);
+                        }
+                        else {
+                            const pointKey = '' + i + ',' + staticValue;
+                            this.incrementPointCounter(pointKey);
+                        }
+                    }
+                }
+
+                // count diagonal lines
+                if (includeDiagonal) {
+                    for (let i = 0; i <= delta; ++i) {
+                        let x;
+                        let y;
+                        if (line.x1 < line.x2) {
+                            x = line.x1 + i;
+                        }
+                        else {
+                            x = line.x1 - i;
+                        }
+                        if (line.y1 < line.y2) {
+                            y = line.y1 + i;
+                        }
+                        else {
+                            y = line.y1 - i;
+                        }
+                        const pointKey = '' + x + ',' + y;
+                        this.incrementPointCounter(pointKey);
+                    }
+                }
+            }
+        });
+
+        // Now count how many points overlap
+        for (const point in this.pointCounter) {
+            if (this.pointCounter[point] > 1) {
+                totalIntersectingCount++;
+            }
+        }
+
+        consola.info('num point groups:', linesArray.length);
+        consola.info('num line points total:', Object.getOwnPropertyNames(this.pointCounter).length);
+        consola.info('[DAY 5] total intersecting points:', totalIntersectingCount);
+
+        return totalIntersectingCount;
+    }
+
+    static incrementPointCounter(pointKey) {
+        if (this.pointCounter[pointKey]) {
+            this.pointCounter[pointKey]++;
+        }
+        else {
+            this.pointCounter[pointKey] = 1;
+        }
     }
 }

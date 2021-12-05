@@ -170,6 +170,12 @@ export default class MainScene extends Phaser.Scene {
         this.gift4.setPipeline('Light2D');
         this.gift4.angle = 10;
 
+        // DAY 5
+        this.linesData = this.cache.text.get('lines');
+        this.gift5 = this.add.sprite(1400, 410, 'gift-5');
+        this.gift5.setPipeline('Light2D');
+        this.gift5.angle = -10;
+
         // Place Shipwreck and loot
         this.createShipwreckLoot();
 
@@ -358,11 +364,11 @@ export default class MainScene extends Phaser.Scene {
             consola.info('Collided with gift 1');
             const numIncreasingDepths = AoC.getIncreasingDepthsNum(this.sonarDepths, 1);
             const numIncreasingGroups = AoC.getIncreasingDepthsNum(this.sonarDepths, 3);
-            consola.log('[AoC] Day 1 Part 1, increasing depths: ', numIncreasingDepths);
-            consola.log('[AoC] Day 1 Part 2, increasing groups: ', numIncreasingGroups);
+            consola.log('[DAY 1-1] Increasing depths: ', numIncreasingDepths);
+            consola.log('[DAY 1-2] Increasing depths groups: ', numIncreasingGroups);
 
             // Speech Bubble
-            this.sub.createSpeechBubble(400, 110, 'Sonar depth mapping complete Captain!');
+            this.sub.createSpeechBubble(400, 110, 'Sonar depth mapping complete, Captain!');
 
             this.gift1.destroy();
             this.gift1 = null;
@@ -372,10 +378,10 @@ export default class MainScene extends Phaser.Scene {
 
             AoC.multiplyDirections(this.subDirections);
             const directionsProduct = AoC.multiplyDirections(this.subDirections);
-            consola.log('[AoC] Day 2 Part 2, directions product: ', directionsProduct);
+            consola.log('[DAY 2-2] Directions product: ', directionsProduct);
 
             // Speech Bubble
-            this.sub.createSpeechBubble(400, 110, 'Sub instructions received Captain!');
+            this.sub.createSpeechBubble(400, 110, 'Sub instructions received, Captain!');
 
             this.gift2.destroy();
             this.gift2 = null;
@@ -384,10 +390,10 @@ export default class MainScene extends Phaser.Scene {
             consola.info('Collided with gift 3');
 
             const diagReport = AoC.getDiagnosticReport(this.diagData);
-            consola.log('Diagnostics report:', diagReport);
+            consola.log('[DAY 3] Diagnostics report:', diagReport);
 
             // Speech Bubble
-            this.sub.createSpeechBubble(400, 110, 'Diagnostic Report analyzed Captain!');
+            this.sub.createSpeechBubble(400, 110, 'Diagnostic Report analyzed, Captain!');
 
             this.gift3.destroy();
             this.gift3 = null;
@@ -395,14 +401,25 @@ export default class MainScene extends Phaser.Scene {
         else if (this.gift4 && this.checkSubGiftIntersect(this.gift4)) {
             consola.info('Collided with gift 4');
 
-            const winningNumber = AoC.playBingo(this.bingoBoards);
-            consola.log('Winning number:', winningNumber);
+            const boards = AoC.playBingo(this.bingoBoards);
+            consola.log('[DAY 4] First winning number:', boards.first, ' last winning number:', boards.last);
 
             // Speech Bubble
-            this.sub.createSpeechBubble(400, 110, 'You beat that squid good in Bingo Captain!');
+            this.sub.createSpeechBubble(400, 110, 'You beat that squid good in Bingo, Captain!');
 
             this.gift4.destroy();
             this.gift4 = null;
+        }
+        else if (this.gift5 && this.checkSubGiftIntersect(this.gift5)) {
+            consola.info('Collided with gift 4');
+
+            // Speech Bubble
+            this.sub.createSpeechBubble(400, 110, 'Geyser mapping complete, Captain!');
+            consola.log('[DAY 5-1] Total overlapping points:', AoC.getLineIntersects(this.linesData));
+            consola.log('[DAY 5-2] Total overlapping points:', AoC.getLineIntersects(this.linesData, true));
+
+            this.gift5.destroy();
+            this.gift5 = null;
         }
     }
 
