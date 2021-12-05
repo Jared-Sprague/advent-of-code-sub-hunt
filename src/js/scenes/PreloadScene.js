@@ -145,7 +145,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.json('directions', 'assets/json/day2-1-directions.json');
         this.load.json('diag', 'assets/json/day3-diag.json');
         this.load.json('bingo-boards', 'assets/json/day4-bingo.json');
-        this.load.text('lines', 'assets/json/day5-lines-small.txt');
+        this.load.text('lines', 'assets/json/day5-lines.txt');
     }
 
     /**

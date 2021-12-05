@@ -273,8 +273,9 @@ export default class AoC {
         return unmarkedSum;
     }
 
-    static getLineIntersects(lines) {
-        const pointCounter = {};
+    // DAY 5 - Counting line intersects
+    static getLineIntersects(lines, includeDiagonal = false) {
+        this.pointCounter = {};
         const linesArray = [];
         const pointsRegex = /(\d+,\d+) -> (\d+,\d+)/;
         let match;
@@ -286,10 +287,10 @@ export default class AoC {
                 const point1 = match[1].split(',');
                 const point2 = match[2].split(',');
                 linesArray.push({
-                    x1: point1[0],
-                    y1: point1[1],
-                    x2: point2[0],
-                    y2: point2[1],
+                    x1: parseInt(point1[0]),
+                    y1: parseInt(point1[1]),
+                    x2: parseInt(point2[0]),
+                    y2: parseInt(point2[1]),
                 });
             }
         });
@@ -297,12 +298,15 @@ export default class AoC {
         // Iterate over lines and increment point intersects
         linesArray.forEach((line) => {
             // only consider horizontal and vertical
-            if (line.x1 === line.x2 || line.y1 === line.y2) {
-                const axis = (line.x1 === line.x2) ? 'y' : 'x';
+            if ((line.x1 === line.x2 || line.y1 === line.y2) || includeDiagonal) {
+                let axis;
                 let staticValue;
                 let deltaStart;
                 let deltaEnd;
-                if (axis === 'y') {
+                let delta;
+
+                if (line.x1 === line.x2) {
+                    axis = 'y';
                     staticValue = line.x1;
                     if (line.y1 < line.y2) {
                         deltaStart = line.y1;
@@ -313,7 +317,8 @@ export default class AoC {
                         deltaEnd = line.y1;
                     }
                 }
-                else {
+                else if (line.y1 === line.y2) {
+                    axis = 'x';
                     staticValue = line.y1;
                     if (line.x1 < line.x2) {
                         deltaStart = line.x1;
@@ -324,40 +329,72 @@ export default class AoC {
                         deltaEnd = line.x1;
                     }
                 }
-
-                // Now calculate the line points and increment the counter
-                for (let i = deltaStart; i <= deltaEnd; ++i) {
-                    if (axis === 'y') {
-                        const pointKey = '' + staticValue + ',' + i;
-                        if (pointCounter[pointKey]) {
-                            pointCounter[pointKey]++;
-                        }
-                        else {
-                            pointCounter[pointKey] = 1;
-                        }
+                else {
+                    axis = 'x,y';
+                    if (line.x1 < line.x2) {
+                        delta = line.x2 - line.x1;
                     }
                     else {
-                        const pointKey = '' + i + ',' + staticValue;
-                        if (pointCounter[pointKey]) {
-                            pointCounter[pointKey]++;
+                        delta = line.x1 - line.x2;
+                    }
+                }
+
+                // Now calculate the line points and increment the counter
+                if (axis !== 'x,y') {
+                    for (let i = deltaStart; i <= deltaEnd; ++i) {
+                        if (axis === 'y') {
+                            const pointKey = '' + staticValue + ',' + i;
+                            this.incrementPointCounter(pointKey);
                         }
                         else {
-                            pointCounter[pointKey] = 1;
+                            const pointKey = '' + i + ',' + staticValue;
+                            this.incrementPointCounter(pointKey);
                         }
+                    }
+                }
+
+                // count diagonal lines
+                if (includeDiagonal) {
+                    for (let i = 0; i <= delta; ++i) {
+                        let x;
+                        let y;
+                        if (line.x1 < line.x2) {
+                            x = line.x1 + i;
+                        }
+                        else {
+                            x = line.x1 - i;
+                        }
+                        if (line.y1 < line.y2) {
+                            y = line.y1 + i;
+                        }
+                        else {
+                            y = line.y1 - i;
+                        }
+                        const pointKey = '' + x + ',' + y;
+                        this.incrementPointCounter(pointKey);
                     }
                 }
             }
         });
 
         // Now count how many points overlap
-        for (const point in pointCounter) {
-            if (pointCounter[point] > 1) {
+        for (const point in this.pointCounter) {
+            if (this.pointCounter[point] > 1) {
                 totalIntersectingCount++;
             }
         }
 
         consola.info('num point groups:', linesArray.length);
-        consola.info('num line points total:', Object.getOwnPropertyNames(pointCounter).length);
+        consola.info('num line points total:', Object.getOwnPropertyNames(this.pointCounter).length);
         consola.info('total intersecting points:', totalIntersectingCount);
+    }
+
+    static incrementPointCounter(pointKey) {
+        if (this.pointCounter[pointKey]) {
+            this.pointCounter[pointKey]++;
+        }
+        else {
+            this.pointCounter[pointKey] = 1;
+        }
     }
 }

@@ -173,6 +173,7 @@ export default class MainScene extends Phaser.Scene {
         // DAY 5
         this.linesData = this.cache.text.get('lines');
         AoC.getLineIntersects(this.linesData);
+        AoC.getLineIntersects(this.linesData, true);
 
         // Place Shipwreck and loot
         this.createShipwreckLoot();
