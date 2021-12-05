@@ -7,7 +7,7 @@ const config = {
     WORLD_HEIGHT     : 3000,
     DEBUG            : false,
     THRUST_POWER     : 0.00085,
-    LIGHTS_ALWAYS_ON : true,
+    LIGHTS_ALWAYS_ON : false,
     INVULNERABLE     : false,
     SKY_HEIGHT       : 100,
     GRAVITY          : 0.08,
@@ -15,7 +15,8 @@ const config = {
     BOSS_REVEAL_DEPTH: 2300,
     BOSS_REVEAL_TIME : 7,
     FADE_DURATION    : 250,
-    ROCK_DAMAGE      : 0.05,
+    ROCK_DAMAGE      : 0.07,
+    LIGHT_POWER_DRAIN: 0.02,
     MAX_DARK_DEPTH   : 2300,
     MUSIC_VOLUME     : 0.5,
 };

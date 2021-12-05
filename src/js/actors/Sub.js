@@ -58,7 +58,7 @@ export default class Sub extends Phaser.GameObjects.GameObject {
 
     lightPowerTick() {
         if (this.lightIsOn() && !config.LIGHTS_ALWAYS_ON && !this.isDead()) {
-            this.lightChargeLevel = Phaser.Math.Clamp(this.lightChargeLevel - .1, 0, 1);
+            this.lightChargeLevel = Phaser.Math.Clamp(this.lightChargeLevel - config.LIGHT_POWER_DRAIN, 0, 1);
             if (this.lightChargeLevel === 0) {
                 consola.log('out of power');
                 this.toggleLights();
@@ -89,6 +89,8 @@ export default class Sub extends Phaser.GameObjects.GameObject {
 
         this.light.x = this.lightLocation.x + this.subMatterContainer.x;
         this.light.y = this.lightLocation.y + this.subMatterContainer.y;
+
+        this.updateSpeechBubble();
     }
 
     flickerLights() {
@@ -207,5 +209,98 @@ export default class Sub extends Phaser.GameObjects.GameObject {
         this.propSprite.resetPipeline();
         this.propSprite.anims.stop();
         this.subMatterContainer.y = boss.bossContainer.y + 20;
+    }
+
+    createSpeechBubble(width, height, quote) {
+        // First clean up any existing bubbles
+        this.destroySpeechBubble();
+
+        const x = this.subContainer.x - 50;
+        const y = this.subContainer.y - height - 100;
+        this.bubbleWidth = width;
+        this.bubbleHeight = height;
+        const bubblePadding = 10;
+        const arrowHeight = this.bubbleHeight / 4;
+
+        this.bubble = this.scene.add.graphics({ x: x, y: y });
+
+        //  Bubble shadow
+        this.bubble.fillStyle(0x222222, 0.5);
+        this.bubble.fillRoundedRect(6, 6, this.bubbleWidth, this.bubbleHeight, 16);
+
+        //  Bubble color
+        this.bubble.fillStyle(0xffffff, 1);
+
+        //  Bubble outline line style
+        this.bubble.lineStyle(4, 0x565656, 1);
+
+        //  Bubble shape and outline
+        this.bubble.strokeRoundedRect(0, 0, this.bubbleWidth, this.bubbleHeight, 16);
+        this.bubble.fillRoundedRect(0, 0, this.bubbleWidth, this.bubbleHeight, 16);
+
+        //  Calculate arrow coordinates
+        const point1X = Math.floor(this.bubbleWidth / 7);
+        const point1Y = this.bubbleHeight;
+        const point2X = Math.floor((this.bubbleWidth / 7) * 2);
+        const point2Y = this.bubbleHeight;
+        const point3X = Math.floor(this.bubbleWidth / 7);
+        const point3Y = Math.floor(this.bubbleHeight + arrowHeight);
+
+        //  Bubble arrow shadow
+        this.bubble.lineStyle(4, 0x222222, 0.5);
+        this.bubble.lineBetween(point2X - 1, point2Y + 6, point3X + 2, point3Y);
+
+        //  Bubble arrow fill
+        this.bubble.fillTriangle(point1X, point1Y, point2X, point2Y, point3X, point3Y);
+        this.bubble.lineStyle(2, 0x565656, 1);
+        this.bubble.lineBetween(point2X, point2Y, point3X, point3Y);
+        this.bubble.lineBetween(point1X, point1Y, point3X, point3Y);
+
+        this.bubbleContent = this.scene.add.text(0, 0, quote, {
+            fontFamily: 'Arial',
+            fontSize  : 20,
+            color     : '#000000',
+            align     : 'center',
+            wordWrap  : { width: this.bubbleWidth - (bubblePadding * 2) },
+        });
+
+        const b = this.bubbleContent.getBounds();
+
+        this.bubbleContent.setPosition(this.bubble.x + (this.bubbleWidth / 2) - (b.width / 2), this.bubble.y +
+            (this.bubbleHeight / 2) - (b.height / 2));
+
+        this.bubbleTimeout = setTimeout(() => {
+            this.destroySpeechBubble();
+        }, 4500);
+    }
+
+    destroySpeechBubble() {
+        consola.info('Destroying speech bubble');
+        if (this.bubbleTimeout) {
+            clearTimeout(this.bubbleTimeout);
+        }
+
+        if (this.bubble) {
+            this.bubble.destroy();
+            this.bubble = null;
+        }
+
+        if (this.bubbleContent) {
+            this.bubbleContent.destroy();
+            this.bubbleContent = null;
+        }
+    }
+
+    updateSpeechBubble() {
+        if (this.bubble && this.bubbleContent) {
+            // set speech bubble position
+            const x = this.subContainer.x - 50;
+            const y = this.subContainer.y - this.bubbleHeight - 100;
+            const b = this.bubbleContent.getBounds();
+
+            this.bubble.setPosition(x, y);
+            this.bubbleContent.setPosition(this.bubble.x + (this.bubbleWidth / 2) - (b.width / 2), this.bubble.y +
+                (this.bubbleHeight / 2) - (b.height / 2));
+        }
     }
 }

@@ -46,7 +46,7 @@ export default class MainScene extends Phaser.Scene {
 
         // Add the Actors to the scene
         // Barge sprite
-        this.bargeSprite = this.add.sprite(1000, 80, 'barge-image');
+        this.bargeSprite = this.add.sprite(1000, 40, 'barge-image');
         this.bargeSprite.scale = 1.2;
 
         // Rock pillar shapes
@@ -146,18 +146,6 @@ export default class MainScene extends Phaser.Scene {
         });
 
         // ---- Advent of Code ----
-        // Create terminal
-        this.terminalDomElement = this.add.dom(0, 0).createFromCache('terminal');
-        this.terminalDomElement.addListener('click');
-        this.terminalDomElement.on('click', (event) => {
-            if (event.target.name === 'closeButton') {
-                consola.info('close button clicked');
-                this.terminalDomElement.setVisible(false);
-                this.scene.resume();
-            }
-        });
-        this.terminalDomElement.setVisible(false);
-
         // DAY 1
         this.sonarDepths = this.cache.json.get('sonar-depths');
         this.gift1 = this.add.sprite(700, 400, 'gift-1');
@@ -370,79 +358,50 @@ export default class MainScene extends Phaser.Scene {
     async handleGiftCollisions() {
         if (this.gift1 && this.checkSubGiftIntersect(this.gift1)) {
             consola.info('Collided with gift 1');
-            this.terminalDomElement.setX(this.sub.subContainer.x);
-            this.terminalDomElement.setY(this.sub.subContainer.y);
-            this.terminalDomElement.setVisible(true);
-            this.scene.pause();
-
             const numIncreasingDepths = AoC.getIncreasingDepthsNum(this.sonarDepths, 1);
             const numIncreasingGroups = AoC.getIncreasingDepthsNum(this.sonarDepths, 3);
             consola.log('[AoC] Day 1 Part 1, increasing depths: ', numIncreasingDepths);
             consola.log('[AoC] Day 1 Part 2, increasing groups: ', numIncreasingGroups);
 
-            // fake console output
-            const div = document.getElementById('text');
-            // for (let i = 0; i < this.sonarDepths.length - 30; i += 2) {
-            //     let lines = '';
-            //     for (let j = 0; j < 30; ++j) {
-            //         lines += '<p>' + this.sonarDepths[i + j] + '</p>';
-            //     }
-            //     div.innerHTML = lines;
-            //     await sleep(0.2);
-            // }
-            div.innerHTML = 'Sonar depth mapping complete Captain!';
+            // Speech Bubble
+            this.sub.createSpeechBubble(400, 110, 'Sonar depth mapping complete Captain!');
 
             this.gift1.destroy();
             this.gift1 = null;
         }
         else if (this.gift2 && this.checkSubGiftIntersect(this.gift2)) {
             consola.info('Collided with gift 2');
-            this.terminalDomElement.setX(this.sub.subContainer.x);
-            this.terminalDomElement.setY(this.sub.subContainer.y);
-            this.terminalDomElement.setVisible(true);
-            this.scene.pause();
 
             AoC.multiplyDirections(this.subDirections);
             const directionsProduct = AoC.multiplyDirections(this.subDirections);
             consola.log('[AoC] Day 2 Part 2, directions product: ', directionsProduct);
 
-            // fake console output
-            const div = document.getElementById('text');
-            div.innerHTML = 'Sub instructions received Captain!';
+            // Speech Bubble
+            this.sub.createSpeechBubble(400, 110, 'Sub instructions received Captain!');
 
             this.gift2.destroy();
             this.gift2 = null;
         }
         else if (this.gift3 && this.checkSubGiftIntersect(this.gift3)) {
             consola.info('Collided with gift 3');
-            this.terminalDomElement.setX(this.sub.subContainer.x);
-            this.terminalDomElement.setY(this.sub.subContainer.y);
-            this.terminalDomElement.setVisible(true);
-            this.scene.pause();
 
             const diagReport = AoC.getDiagnosticReport(this.diagData);
             consola.log('Diagnostics report:', diagReport);
 
-            // fake console output
-            const div = document.getElementById('text');
-            div.innerHTML = 'Diagnostic Report parsed Captain!';
+            // Speech Bubble
+            this.sub.createSpeechBubble(400, 110, 'Diagnostic Report analyzed Captain!');
 
             this.gift3.destroy();
             this.gift3 = null;
         }
         else if (this.gift4 && this.checkSubGiftIntersect(this.gift4)) {
             consola.info('Collided with gift 4');
-            this.terminalDomElement.setX(this.sub.subContainer.x);
-            this.terminalDomElement.setY(this.sub.subContainer.y);
-            this.terminalDomElement.setVisible(true);
-            this.scene.pause();
 
             const winningNumber = AoC.playBingo(this.bingoBoards);
             consola.log('Winning number:', winningNumber);
 
-            // fake console output
-            const div = document.getElementById('text');
-            div.innerHTML = 'You beat that squid good in Bingo Captain!';
+            // Speech Bubble
+            this.sub.createSpeechBubble(400, 110, 'You beat that squid good in Bingo Captain!');
 
             this.gift4.destroy();
             this.gift4 = null;
