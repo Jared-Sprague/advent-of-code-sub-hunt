@@ -10,10 +10,6 @@ consola.level = config.LOG_LEVEL;
 import Sub from '../actors/Sub';
 // import GlowFish from '../actors/GlowFish';
 
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export default class MainScene extends Phaser.Scene {
 
     constructor() {
@@ -154,9 +150,9 @@ export default class MainScene extends Phaser.Scene {
 
         // DAY 2
         this.subDirections = this.cache.json.get('directions');
-        this.gift2 = this.add.sprite(760, 500, 'gift-2');
+        this.gift2 = this.add.sprite(1400, 410, 'gift-2');
         this.gift2.setPipeline('Light2D');
-        this.gift2.angle = 35;
+        this.gift2.angle = -10;
 
         // DAY 3
         this.diagData = this.cache.json.get('diag');
@@ -166,15 +162,21 @@ export default class MainScene extends Phaser.Scene {
 
         // DAY 4
         this.bingoBoards = this.cache.json.get('bingo-boards');
-        this.gift4 = this.add.sprite(850, 900, 'gift-4');
+        this.gift4 = this.add.sprite(1280, 780, 'gift-4');
         this.gift4.setPipeline('Light2D');
-        this.gift4.angle = 10;
+        this.gift4.angle = -5;
 
         // DAY 5
         this.linesData = this.cache.text.get('lines');
-        this.gift5 = this.add.sprite(1400, 410, 'gift-5');
+        this.gift5 = this.add.sprite(840, 890, 'gift-5');
         this.gift5.setPipeline('Light2D');
-        this.gift5.angle = -10;
+        this.gift5.angle = 15;
+
+        // DAY 6
+        this.initialFish = this.cache.text.get('initial-fish');
+        this.gift6 = this.add.sprite(1150, 1170, 'gift-6');
+        this.gift6.setPipeline('Light2D');
+        this.gift6.angle = 0;
 
         // Place Shipwreck and loot
         this.createShipwreckLoot();
@@ -411,7 +413,7 @@ export default class MainScene extends Phaser.Scene {
             this.gift4 = null;
         }
         else if (this.gift5 && this.checkSubGiftIntersect(this.gift5)) {
-            consola.info('Collided with gift 4');
+            consola.info('Collided with gift 5');
 
             // Speech Bubble
             this.sub.createSpeechBubble(400, 110, 'Geyser mapping complete, Captain!');
@@ -420,6 +422,20 @@ export default class MainScene extends Phaser.Scene {
 
             this.gift5.destroy();
             this.gift5 = null;
+        }
+        else if (this.gift6 && this.checkSubGiftIntersect(this.gift6)) {
+            consola.info('Collided with gift 6');
+
+            const part1Num = AoC.getFishNum(this.initialFish, 80);
+            const part2Num = AoC.getFishNum(this.initialFish, 256);
+            consola.log('[DAY 6-1] Total fish after 80 days:', part1Num);
+            consola.log('[DAY 6-2] Total fish after 256 days:', part2Num);
+
+            // Speech Bubble
+            this.sub.createSpeechBubble(400, 110, 'The fish are multiplying, Captain!');
+
+            this.gift6.destroy();
+            this.gift6 = null;
         }
     }
 

@@ -107,6 +107,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image('gift-3', 'assets/images/gift-3.png');
         this.load.image('gift-4', 'assets/images/gift-4.png');
         this.load.image('gift-5', 'assets/images/gift-5.png');
+        this.load.image('gift-6', 'assets/images/gift-6.png');
 
         // Sprite sheets
         this.load.spritesheet('fullscreen', 'assets/images/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
@@ -140,13 +141,12 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.audio('coins-collection', 'assets/sounds/coins-collection.mp3');
 
         // Advent of Code data
-        this.load.html('terminal', 'assets/dom/terminal.html');
         this.load.json('sonar-depths', 'assets/json/day1-1-sonar-depths.json');
-        this.load.json('sonar-depths-small', 'assets/json/day1-1-sonar-depths-small.json');
         this.load.json('directions', 'assets/json/day2-1-directions.json');
         this.load.json('diag', 'assets/json/day3-diag.json');
         this.load.json('bingo-boards', 'assets/json/day4-bingo.json');
         this.load.text('lines', 'assets/json/day5-lines.txt');
+        this.load.text('initial-fish', 'assets/json/day6-fish.txt');
     }
 
     /**
