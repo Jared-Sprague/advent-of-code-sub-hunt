@@ -178,6 +178,12 @@ export default class MainScene extends Phaser.Scene {
         this.gift6.setPipeline('Light2D');
         this.gift6.angle = 0;
 
+        // DAY 7
+        // this.initialFish = this.cache.text.get('initial-fish');
+        this.gift7 = this.add.sprite(900, 1420, 'gift-7');
+        this.gift7.setPipeline('Light2D');
+        this.gift7.angle = 2;
+
         // Place Shipwreck and loot
         this.createShipwreckLoot();
 
@@ -436,6 +442,20 @@ export default class MainScene extends Phaser.Scene {
 
             this.gift6.destroy();
             this.gift6 = null;
+        }
+        else if (this.gift7 && this.checkSubGiftIntersect(this.gift7)) {
+            consola.info('Collided with gift 6');
+
+            // const part1Num = AoC.getFishNum(this.initialFish, 80);
+            // const part2Num = AoC.getFishNum(this.initialFish, 256);
+            // consola.log('[DAY 6-1] Total fish after 80 days:', part1Num);
+            // consola.log('[DAY 6-2] Total fish after 256 days:', part2Num);
+
+            // Speech Bubble
+            this.sub.createSpeechBubble(400, 110, 'Day 7, Captain!');
+
+            this.gift7.destroy();
+            this.gift7 = null;
         }
     }
 

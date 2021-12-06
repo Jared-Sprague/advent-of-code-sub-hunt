@@ -108,6 +108,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image('gift-4', 'assets/images/gift-4.png');
         this.load.image('gift-5', 'assets/images/gift-5.png');
         this.load.image('gift-6', 'assets/images/gift-6.png');
+        this.load.image('gift-7', 'assets/images/gift-7.png');
 
         // Sprite sheets
         this.load.spritesheet('fullscreen', 'assets/images/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
