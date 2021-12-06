@@ -411,7 +411,7 @@ export default class MainScene extends Phaser.Scene {
             this.gift4 = null;
         }
         else if (this.gift5 && this.checkSubGiftIntersect(this.gift5)) {
-            consola.info('Collided with gift 4');
+            consola.info('Collided with gift 5');
 
             // Speech Bubble
             this.sub.createSpeechBubble(400, 110, 'Geyser mapping complete, Captain!');
