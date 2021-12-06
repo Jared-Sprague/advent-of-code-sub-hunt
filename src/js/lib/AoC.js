@@ -407,4 +407,22 @@ export default class AoC {
             this.pointCounter[pointKey] = 1;
         }
     }
+
+    static getFishNum(initialInput, days) {
+        const initialArray = initialInput.split(',');
+        const fishDaysArray = new Array(9);
+        fishDaysArray.fill(0);
+
+        initialArray.forEach((daysToNextSpawn) => {
+            fishDaysArray[parseInt(daysToNextSpawn)]++;
+        });
+
+        for (let i = 0; i < days; ++i) {
+            const newSpawnsCount = fishDaysArray.shift();
+            fishDaysArray.push(newSpawnsCount);
+            fishDaysArray[6] += newSpawnsCount;
+        }
+
+        return _.sum(fishDaysArray);
+    }
 }
