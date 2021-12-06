@@ -1,4 +1,4 @@
-import _ from './lodash';
+import _ from './lodash.min.js';
 import config from '../config';
 const consola = require('consola').withTag('AoC');
 consola.level = config.LOG_LEVEL;
