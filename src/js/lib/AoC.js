@@ -425,4 +425,59 @@ export default class AoC {
 
         return _.sum(fishDaysArray);
     }
+
+    static getLeastFuel(crabPositions, part1 = true) {
+        let leastFuel = Infinity;
+        let optimalPosition;
+        const crabArray = crabPositions.split(',');
+
+        for (let i = 0; i < crabArray.length; ++i) {
+            crabArray[i] = parseInt(crabArray[i]);
+        }
+
+        crabArray.sort((a, b) => a - b);
+
+        const minPosition = crabArray[0];
+        const maxPosition = crabArray[crabArray.length - 1];
+
+        for (let i = minPosition; i < maxPosition; ++i) {
+            const fuelNeeded = this.getFuelNeededAtPosition(i, crabArray, part1);
+            if (fuelNeeded < leastFuel) {
+                leastFuel = fuelNeeded;
+                optimalPosition = i;
+            }
+        }
+
+        consola.info('Least fuel used:', leastFuel, ' at position:', optimalPosition);
+
+        return leastFuel;
+    }
+
+    static getFuelNeededAtPosition(position, crabArray, part1) {
+        let fuelNeeded = 0;
+
+        for (let i = 0; i < crabArray.length; ++i) {
+            fuelNeeded += this.calculateExtraFuel(Math.abs(crabArray[i] - position), part1);
+        }
+
+        return fuelNeeded;
+    }
+
+    static calculateExtraFuel(positionsToMove, part1) {
+        if (part1) {
+            return positionsToMove;
+        }
+
+        let totalFuel = 0;
+        let previousStepCost = 0;
+        let currentStepCost = 0;
+
+        for (let i = 1; i <= positionsToMove; ++i) {
+            currentStepCost = previousStepCost + 1;
+            totalFuel += currentStepCost;
+            previousStepCost = currentStepCost;
+        }
+
+        return totalFuel;
+    }
 }
