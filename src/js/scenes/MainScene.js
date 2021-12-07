@@ -179,10 +179,12 @@ export default class MainScene extends Phaser.Scene {
         this.gift6.angle = 0;
 
         // DAY 7
-        // this.initialFish = this.cache.text.get('initial-fish');
+        this.crabPositions = this.cache.text.get('day7-crabs');
         this.gift7 = this.add.sprite(900, 1420, 'gift-7');
         this.gift7.setPipeline('Light2D');
         this.gift7.angle = 2;
+        const leastFuel = AoC.getLeastFuel(this.crabPositions);
+        consola.info('[DAY 7-1] Least fuel used:', leastFuel);
 
         // Place Shipwreck and loot
         this.createShipwreckLoot();

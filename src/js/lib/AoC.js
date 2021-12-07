@@ -425,4 +425,45 @@ export default class AoC {
 
         return _.sum(fishDaysArray);
     }
+
+    static getLeastFuel(crabPositions) {
+        let leastFuel = Infinity;
+        let optimalPosition;
+        const crabArray = crabPositions.split(',');
+
+        // convert to int
+        for (let i = 0; i < crabArray.length; ++i) {
+            crabArray[i] = parseInt(crabArray[i]);
+        }
+
+        crabArray.sort((a, b) => a - b);
+
+        const oneQuarterLength = Math.round(crabArray.length * 0.2);
+        const middleIndex = Math.round(crabArray.length / 2);
+        const startIndex = middleIndex - oneQuarterLength;
+        const endIndex = middleIndex + oneQuarterLength;
+
+        for (let i = startIndex; i < endIndex; ++i) {
+            const crabPosition = crabArray[i];
+            const fuelNeeded = this.getFuelNeededAtPosition(crabPosition, crabArray);
+            if (fuelNeeded < leastFuel) {
+                leastFuel = fuelNeeded;
+                optimalPosition = crabPosition;
+            }
+        }
+
+        consola.info('Least fuel used:', leastFuel, ' at position:', optimalPosition);
+
+        return leastFuel;
+    }
+
+    static getFuelNeededAtPosition(position, crabArray) {
+        let fuelNeeded = 0;
+
+        for (let i = 0; i < crabArray.length; ++i) {
+            fuelNeeded += Math.abs(crabArray[i] - position);
+        }
+
+        return fuelNeeded;
+    }
 }
