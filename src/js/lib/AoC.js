@@ -426,29 +426,25 @@ export default class AoC {
         return _.sum(fishDaysArray);
     }
 
-    static getLeastFuel(crabPositions) {
+    static getLeastFuel(crabPositions, part1 = true) {
         let leastFuel = Infinity;
         let optimalPosition;
         const crabArray = crabPositions.split(',');
 
-        // convert to int
         for (let i = 0; i < crabArray.length; ++i) {
             crabArray[i] = parseInt(crabArray[i]);
         }
 
         crabArray.sort((a, b) => a - b);
 
-        const oneQuarterLength = Math.round(crabArray.length * 0.2);
-        const middleIndex = Math.round(crabArray.length / 2);
-        const startIndex = middleIndex - oneQuarterLength;
-        const endIndex = middleIndex + oneQuarterLength;
+        const minPosition = crabArray[0];
+        const maxPosition = crabArray[crabArray.length - 1];
 
-        for (let i = startIndex; i < endIndex; ++i) {
-            const crabPosition = crabArray[i];
-            const fuelNeeded = this.getFuelNeededAtPosition(crabPosition, crabArray);
+        for (let i = minPosition; i < maxPosition; ++i) {
+            const fuelNeeded = this.getFuelNeededAtPosition(i, crabArray, part1);
             if (fuelNeeded < leastFuel) {
                 leastFuel = fuelNeeded;
-                optimalPosition = crabPosition;
+                optimalPosition = i;
             }
         }
 
@@ -457,13 +453,31 @@ export default class AoC {
         return leastFuel;
     }
 
-    static getFuelNeededAtPosition(position, crabArray) {
+    static getFuelNeededAtPosition(position, crabArray, part1) {
         let fuelNeeded = 0;
 
         for (let i = 0; i < crabArray.length; ++i) {
-            fuelNeeded += Math.abs(crabArray[i] - position);
+            fuelNeeded += this.calculateExtraFuel(Math.abs(crabArray[i] - position), part1);
         }
 
         return fuelNeeded;
+    }
+
+    static calculateExtraFuel(positionsToMove, part1) {
+        if (part1) {
+            return positionsToMove;
+        }
+
+        let totalFuel = 0;
+        let previousStepCost = 0;
+        let currentStepCost = 0;
+
+        for (let i = 1; i <= positionsToMove; ++i) {
+            currentStepCost = previousStepCost + 1;
+            totalFuel += currentStepCost;
+            previousStepCost = currentStepCost;
+        }
+
+        return totalFuel;
     }
 }
