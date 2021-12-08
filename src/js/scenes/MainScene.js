@@ -184,6 +184,12 @@ export default class MainScene extends Phaser.Scene {
         this.gift7.setPipeline('Light2D');
         this.gift7.angle = 2;
 
+        // DAY 8
+        this.crabPositions = this.cache.text.get('day8-input');
+        this.gift8 = this.add.sprite(1180, 1620, 'gift-8');
+        this.gift8.setPipeline('Light2D');
+        this.gift8.angle = -25;
+
         // Place Shipwreck and loot
         this.createShipwreckLoot();
 
@@ -456,6 +462,20 @@ export default class MainScene extends Phaser.Scene {
 
             this.gift7.destroy();
             this.gift7 = null;
+        }
+        else if (this.gift8 && this.checkSubGiftIntersect(this.gift8)) {
+            consola.info('Collided with gift 8');
+
+            // let leastFuel = AoC.getLeastFuel(this.crabPositions);
+            // consola.log('[DAY 7-1] Least fuel used:', leastFuel);
+            // leastFuel = AoC.getLeastFuel(this.crabPositions, false);
+            // consola.log('[DAY 7-2] Least fuel used:', leastFuel);
+
+            // Speech Bubble
+            this.sub.createSpeechBubble(400, 110, 'Day 8, Captain!');
+
+            this.gift8.destroy();
+            this.gift8 = null;
         }
     }
 
