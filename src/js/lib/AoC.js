@@ -480,4 +480,35 @@ export default class AoC {
 
         return totalFuel;
     }
+
+    // DAY 9
+    static day8(input) {
+        input = input.trim();
+        const lines = input.split('\n');
+        const wireOutputPairs = [];
+        let totalUniqueOutputDigits = 0;
+
+        lines.forEach((line) => {
+            const pair = line.split('|');
+
+            const outputDigits = pair[1].split(' ');
+            outputDigits.forEach((digit) => {
+                switch (digit.length) {
+                    case 2: // 1 digit
+                    case 4: // 4 digit
+                    case 3: // 7 digit
+                    case 7: // 8 digit
+                        totalUniqueOutputDigits++;
+                        break;
+                }
+            });
+
+            wireOutputPairs.push({
+                wires : pair[0],
+                output: pair[1],
+            });
+        });
+
+        consola.info('total unique output digits: ', totalUniqueOutputDigits);
+    }
 }
