@@ -486,29 +486,197 @@ export default class AoC {
         input = input.trim();
         const lines = input.split('\n');
         const wireOutputPairs = [];
-        let totalUniqueOutputDigits = 0;
+        const totalUniqueOutputDigits = 0;
+        const validSchema = [];
 
-        lines.forEach((line) => {
-            const pair = line.split('|');
+        const digitDisplay = new DigitDisplay();
+        digitDisplay.set1('ab');
+        digitDisplay.set7('dab');
+        digitDisplay.set4('eafb');
+        digitDisplay.set8('acedgfb');
 
-            const outputDigits = pair[1].split(' ');
-            outputDigits.forEach((digit) => {
-                switch (digit.length) {
-                    case 2: // 1 digit
-                    case 4: // 4 digit
-                    case 3: // 7 digit
-                    case 7: // 8 digit
-                        totalUniqueOutputDigits++;
-                        break;
-                }
-            });
-
-            wireOutputPairs.push({
-                wires : pair[0],
-                output: pair[1],
-            });
-        });
+        // lines.forEach((line) => {
+        //     consola.log('line:', line);
+        //     const pair = line.split('|');
+        //     const tenDigits = pair[0].trim().split(' ');
+        //     const outputDigits = pair[1].trim().split(' ');
+        //     const uniqueDigits = {};
+        //     const schemaMap = {};
+        //
+        //     tenDigits.forEach((digit) => {
+        //         switch (digit.length) {
+        //             case 2: // 1 digit
+        //                 uniqueDigits[1] = digit;
+        //                 schemaMap.oneDigit = digit;
+        //                 schemaMap.c = digit[0];
+        //                 schemaMap.f = digit[1];
+        //                 break;
+        //             case 3: // 7 digit
+        //                 uniqueDigits[7] = digit;
+        //                 break;
+        //             case 4: // 4 digit
+        //                 uniqueDigits[4] = digit;
+        //                 break;
+        //             case 7: // 8 digit
+        //                 uniqueDigits[8] = digit;
+        //                 break;
+        //         }
+        //     });
+        //
+        //     // fill in schema map
+        //
+        //
+        //     outputDigits.forEach((digit) => {
+        //         switch (digit.length) {
+        //             case 2: // 1 digit
+        //                 totalUniqueOutputDigits++;
+        //                 break;
+        //             case 4: // 4 digit
+        //                 totalUniqueOutputDigits++;
+        //                 break;
+        //             case 3: // 7 digit
+        //                 totalUniqueOutputDigits++;
+        //                 break;
+        //             case 7: // 8 digit
+        //                 totalUniqueOutputDigits++;
+        //                 break;
+        //         }
+        //     });
+        //
+        //     // schemaMap.c = digit[0];
+        //     // schemaMap.f = digit[1];
+        //
+        //     wireOutputPairs.push({
+        //         wires : pair[0],
+        //         output: pair[1],
+        //     });
+        // });
 
         consola.info('total unique output digits: ', totalUniqueOutputDigits);
+    }
+
+
+}
+
+class DigitDisplay {
+    constructor() {
+        // Init
+        this.segmentMap = {
+            a: null,
+            b: null,
+            c: null,
+            d: null,
+            e: null,
+            f: null,
+            g: null,
+        };
+
+        this.cfLocked = false;
+        this.bdLocked = false;
+        this.egLocked = false;
+    }
+
+    setDefaultSegments() {
+        this.segmentMap.a = 'a';
+        this.segmentMap.b = 'b';
+        this.segmentMap.c = 'c';
+        this.segmentMap.d = 'd';
+        this.segmentMap.e = 'e';
+        this.segmentMap.f = 'f';
+        this.segmentMap.g = 'g';
+    }
+
+    /**
+     * Assigns the digit 1 sequence characters to the default map not including, the 'cf' part
+     * @param sequence random 2 character sequence
+     */
+    set1(sequence) {
+        this.segmentMap.c = sequence[0];
+        this.segmentMap.f = sequence[1];
+        this.cfLocked = false;
+    }
+
+    /**
+     * Assigns the digit 4 sequence characters to the default map not including the 1 characters, the 'bd' part
+     * @param sequence random 4 character sequence
+     */
+    set4(sequence) {
+        const bd = this.removeCharactersFromString(sequence, this.get1());
+        this.segmentMap.b = bd[0];
+        this.segmentMap.d = bd[1];
+        this.bdLocked = false;
+    }
+
+    /**
+     * Assigns the digit 7 sequence characters to the default map not including the 1 characters, the 'a' part
+     * @param sequence random 3 character sequence
+     */
+    set7(sequence) {
+        this.segmentMap.a = this.removeCharactersFromString(sequence, this.get1());
+    }
+
+    /**
+     * Assigns the digit 8 sequence characters to the default map not including the 1.4,7 characters, the 'eg' part
+     * @param sequence random 7 character sequence
+     */
+    set8(sequence) {
+        const charactersToRemove = this.get1() + this.get4() + this.get7();
+        const eg = this.removeCharactersFromString(sequence, charactersToRemove);
+        this.segmentMap.e = eg[0];
+        this.segmentMap.g = eg[1];
+        this.egLocked = false;
+    }
+
+    get0() {
+        return this.segmentMap.a +
+            this.segmentMap.b +
+            this.segmentMap.c +
+            this.segmentMap.e +
+            this.segmentMap.f +
+            this.segmentMap.g;
+    }
+
+    get1() {
+        return this.segmentMap.c +
+            this.segmentMap.f;
+    }
+
+    get4() {
+        return this.segmentMap.b +
+            this.segmentMap.d +
+            this.segmentMap.c +
+            this.segmentMap.g;
+    }
+
+    get7() {
+        return this.segmentMap.a +
+            this.segmentMap.c +
+            this.segmentMap.f;
+    }
+
+    get8() {
+        return this.segmentMap.a +
+            this.segmentMap.b +
+            this.segmentMap.c +
+            this.segmentMap.d +
+            this.segmentMap.e +
+            this.segmentMap.f +
+            this.segmentMap.g;
+    }
+
+    decode(segmentString) {
+
+    }
+
+    /**
+     * Removes charaters from stringA that are found in stringB
+     * @param stringA string to be modified
+     * @param stringB string of characters to be removed from stringA
+     * @return {*}
+     */
+    removeCharactersFromString(stringA, stringB) {
+        const pattern = `[${stringB}]`;
+        const regEx = new RegExp(pattern, 'g');
+        return stringA.replace(regEx, '');
     }
 }
