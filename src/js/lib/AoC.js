@@ -567,16 +567,6 @@ class DigitDisplay {
         this.intCache = {};
     }
 
-    setDefaultSegments() {
-        this.segmentMap.a = 'a';
-        this.segmentMap.b = 'b';
-        this.segmentMap.c = 'c';
-        this.segmentMap.d = 'd';
-        this.segmentMap.e = 'e';
-        this.segmentMap.f = 'f';
-        this.segmentMap.g = 'g';
-    }
-
     /**
      * Assigns the digit 1 sequence characters to the default map, the 'cf' part
      * @param sequence random 2 character sequence
