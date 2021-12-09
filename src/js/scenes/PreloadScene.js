@@ -109,6 +109,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.image('gift-5', 'assets/images/gift-5.png');
         this.load.image('gift-6', 'assets/images/gift-6.png');
         this.load.image('gift-7', 'assets/images/gift-7.png');
+        this.load.image('gift-8', 'assets/images/gift-8.png');
 
         // Sprite sheets
         this.load.spritesheet('fullscreen', 'assets/images/fullscreen-white.png', { frameWidth: 64, frameHeight: 64 });
@@ -149,6 +150,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.text('lines', 'assets/json/day5-lines.txt');
         this.load.text('initial-fish', 'assets/json/day6-fish.txt');
         this.load.text('day7-crabs', 'assets/json/day7-crabs.txt');
+        this.load.text('day8-input', 'assets/json/day8-input.txt');
     }
 
     /**
