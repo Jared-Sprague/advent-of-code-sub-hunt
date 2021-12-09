@@ -470,7 +470,7 @@ export default class MainScene extends Phaser.Scene {
             consola.log('[DAY 8] Total unique:', result.totalUnique, ' Sum of output:', result.outputSum);
 
             // Speech Bubble
-            this.sub.createSpeechBubble(400, 110, 'We fixed 4 digit display, Captain!');
+            this.sub.createSpeechBubble(400, 110, 'We fixed the 4 digit display, Captain!');
 
             this.gift8.destroy();
             this.gift8 = null;
