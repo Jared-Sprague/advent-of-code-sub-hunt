@@ -557,48 +557,57 @@ export default class AoC {
     static day9(input) {
         input = input.trim();
         const lines = input.split('\n');
-        const heightMesh = [];
+        this.heightMesh = [];
         let riskLevelPart1 = 0;
 
         // Build the Height Mesh
         for (const [i, line] of lines.entries()) {
             const heights = line.split('');
-            heightMesh.push([]);
+            this.heightMesh.push([]);
 
             for (let [j, height] of heights.entries()) {
                 height = parseInt(height);
-                const heightNode = new HeightNode(height);
+                const nodeId = `${i}-${j}`;
+                const heightNode = new HeightNode(height, nodeId);
 
                 if (i === 0 && j > 0) {
                     // create left/right relationship with previous height node
-                    const previousNode = heightMesh[i][j - 1];
-                    heightNode.neighborLeft = previousNode.height;
-                    previousNode.neighborRight = height;
+                    const previousNode = this.heightMesh[i][j - 1];
+                    heightNode.neighborLeft.height = previousNode.height;
+                    heightNode.neighborLeft.nodeId = previousNode.nodeId;
+                    previousNode.neighborRight.height = height;
+                    previousNode.neighborRight.nodeId = nodeId;
                 }
                 else if (i > 0 && j === 0) {
                     // only add neighbor UP
-                    const neighborUp = heightMesh[i - 1][j];
-                    heightNode.neighborUp = neighborUp.height;
-                    neighborUp.neighborDown = height;
+                    const nodeUp = this.heightMesh[i - 1][j];
+                    heightNode.neighborUp.height = nodeUp.height;
+                    heightNode.neighborUp.nodeId = nodeUp.nodeId;
+                    nodeUp.neighborDown.height = height;
+                    nodeUp.neighborDown.nodeId = nodeId;
                 }
                 else if (i > 0 && j > 0) {
                     // Add up/down/left/right relationships
-                    const neighborUp = heightMesh[i - 1][j];
-                    const previousNode = heightMesh[i][j - 1];
-                    heightNode.neighborLeft = previousNode.height;
-                    previousNode.neighborRight = height;
-                    heightNode.neighborUp = neighborUp.height;
-                    neighborUp.neighborDown = height;
+                    const nodeUp = this.heightMesh[i - 1][j];
+                    const previousNode = this.heightMesh[i][j - 1];
+                    heightNode.neighborLeft.height = previousNode.height;
+                    heightNode.neighborLeft.nodeId = previousNode.nodeId;
+                    previousNode.neighborRight.height = height;
+                    previousNode.neighborRight.nodeId = nodeId;
+                    heightNode.neighborUp.height = nodeUp.height;
+                    heightNode.neighborUp.nodeId = nodeUp.nodeId;
+                    nodeUp.neighborDown.height = height;
+                    nodeUp.neighborDown.nodeId = nodeId;
                 }
 
-                heightMesh[i].push(heightNode);
+                this.heightMesh[i].push(heightNode);
             }
         }
 
 
         // Part 1
-        for (let i = 0; i < heightMesh.length; i++) {
-            const nodes = heightMesh[i];
+        for (let i = 0; i < this.heightMesh.length; i++) {
+            const nodes = this.heightMesh[i];
             for (let j = 0; j < nodes.length; j++) {
                 const node = nodes[j];
                 if (node.isLowerThanNeighbors()) {
@@ -609,23 +618,99 @@ export default class AoC {
         }
 
         consola.info('[DAY 9-1] Risk level:', riskLevelPart1);
+
+        // Part 2
+        const basins = {};
+        for (let i = 0; i < this.heightMesh.length; i++) {
+            const nodes = this.heightMesh[i];
+            for (let j = 0; j < nodes.length; j++) {
+                const node = nodes[j];
+                node.basinId = this.findBasinId(node.nodeId);
+                if (node.basinId && !basins[node.basinId]) {
+                    basins[node.basinId] = 1;
+                }
+                else if (node.basinId) {
+                    basins[node.basinId]++;
+                }
+            }
+        }
+
+        // Multiply the largest 3 basisn
+        const basinsArray = Object.values(basins).sort((a, b) => a - b).reverse();
+        const answer = basinsArray[0] * basinsArray[1] * basinsArray[2];
+
+        consola.info('[DAY 9-2] Basins answer:', answer);
+    }
+
+    static findBasinId(nodeId) {
+        const id = nodeId.split('-');
+        const row = id[0];
+        const col = id[1];
+
+        const node = this.heightMesh[row][col];
+
+        if (node.height === 9) {
+            return null;
+        }
+        else if (node.isLowerThanNeighbors() || node.basinId) {
+            return node.basinId;
+        }
+        else {
+            // find flow direction
+            const lowestNodeId = node.getLowestNeighborNodeId();
+            return this.findBasinId(lowestNodeId);
+        }
     }
 }
 
 class HeightNode {
-    constructor(height) {
-        this.neighborUp = Infinity;
-        this.neighborDown = Infinity;
-        this.neighborLeft = Infinity;
-        this.neighborRight = Infinity;
+    constructor(height, id) {
+        this.nodeId = id;
         this.height = height;
+        this.basinId = null;
+        this.neighborUp = { height: Infinity, nodeId: null };
+        this.neighborDown = { height: Infinity, nodeId: null };
+        this.neighborLeft = { height: Infinity, nodeId: null };
+        this.neighborRight = { height: Infinity, nodeId: null };
+    }
+
+    getLowestNeighborNodeId() {
+        if (this.isLowerThanNeighbors()) {
+            return this.nodeId;
+        }
+        else {
+            let lowestNeighbor = { nodeId: null, height: Infinity };
+            if (this.neighborUp.height < lowestNeighbor.height) {
+                lowestNeighbor = this.neighborUp;
+            }
+
+            if (this.neighborDown.height < lowestNeighbor.height) {
+                lowestNeighbor = this.neighborDown;
+            }
+
+            if (this.neighborLeft.height < lowestNeighbor.height) {
+                lowestNeighbor = this.neighborLeft;
+            }
+
+            if (this.neighborRight.height < lowestNeighbor.height) {
+                lowestNeighbor = this.neighborRight;
+            }
+
+            return lowestNeighbor.nodeId;
+        }
     }
 
     isLowerThanNeighbors() {
-        return (this.height < this.neighborUp &&
-            this.height < this.neighborDown &&
-            this.height < this.neighborLeft &&
-            this.height < this.neighborRight);
+        const isLowest = this.height < this.neighborUp.height &&
+            this.height < this.neighborDown.height &&
+            this.height < this.neighborLeft.height &&
+            this.height < this.neighborRight.height;
+
+        if (!this.basinId && isLowest) {
+            this.basinId = this.nodeId;
+        }
+
+        return isLowest;
     }
 }
 
