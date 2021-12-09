@@ -481,81 +481,74 @@ export default class AoC {
         return totalFuel;
     }
 
-    // DAY 9
+    // DAY 8
     static day8(input) {
         input = input.trim();
         const lines = input.split('\n');
-        const wireOutputPairs = [];
-        const totalUniqueOutputDigits = 0;
-        const validSchema = [];
-
+        let totalUniqueOutputDigits = 0;
         const digitDisplay = new DigitDisplay();
-        digitDisplay.set1('ab');
-        digitDisplay.set7('dab');
-        digitDisplay.set4('eafb');
-        digitDisplay.set8('acedgfb');
+        let sumOutputValues = 0;
 
-        // lines.forEach((line) => {
-        //     consola.log('line:', line);
-        //     const pair = line.split('|');
-        //     const tenDigits = pair[0].trim().split(' ');
-        //     const outputDigits = pair[1].trim().split(' ');
-        //     const uniqueDigits = {};
-        //     const schemaMap = {};
-        //
-        //     tenDigits.forEach((digit) => {
-        //         switch (digit.length) {
-        //             case 2: // 1 digit
-        //                 uniqueDigits[1] = digit;
-        //                 schemaMap.oneDigit = digit;
-        //                 schemaMap.c = digit[0];
-        //                 schemaMap.f = digit[1];
-        //                 break;
-        //             case 3: // 7 digit
-        //                 uniqueDigits[7] = digit;
-        //                 break;
-        //             case 4: // 4 digit
-        //                 uniqueDigits[4] = digit;
-        //                 break;
-        //             case 7: // 8 digit
-        //                 uniqueDigits[8] = digit;
-        //                 break;
-        //         }
-        //     });
-        //
-        //     // fill in schema map
-        //
-        //
-        //     outputDigits.forEach((digit) => {
-        //         switch (digit.length) {
-        //             case 2: // 1 digit
-        //                 totalUniqueOutputDigits++;
-        //                 break;
-        //             case 4: // 4 digit
-        //                 totalUniqueOutputDigits++;
-        //                 break;
-        //             case 3: // 7 digit
-        //                 totalUniqueOutputDigits++;
-        //                 break;
-        //             case 7: // 8 digit
-        //                 totalUniqueOutputDigits++;
-        //                 break;
-        //         }
-        //     });
-        //
-        //     // schemaMap.c = digit[0];
-        //     // schemaMap.f = digit[1];
-        //
-        //     wireOutputPairs.push({
-        //         wires : pair[0],
-        //         output: pair[1],
-        //     });
-        // });
+        lines.forEach((line) => {
+            const pair = line.split('|');
+            const tenDigits = pair[0].trim().split(' ');
+            const outputDigits = pair[1].trim().split(' ');
+            const sixCharacterDigits = [];
+            let outputValue = '';
 
-        consola.info('total unique output digits: ', totalUniqueOutputDigits);
+            // sort the ten digit array by string length so we can process it from shortest to longest sequence
+            tenDigits.sort((a, b) => a.length - b.length);
+
+            tenDigits.forEach((digit) => {
+                switch (digit.length) {
+                    case 2: // 1 digit
+                        digitDisplay.set1(digit);
+                        break;
+                    case 3: // 7 digit
+                        digitDisplay.set7(digit);
+                        break;
+                    case 4: // 4 digit
+                        digitDisplay.set4(digit);
+                        break;
+                    case 6: // 0, 6, 9
+                        sixCharacterDigits.push(digit);
+                        break;
+                    case 7: // 8 digit
+                        digitDisplay.set8(digit);
+                        break;
+                }
+            });
+
+            sixCharacterDigits.forEach((digit) => {
+                digitDisplay.tuneSixCharacterDigit(digit);
+            });
+
+            outputDigits.forEach((digit) => {
+                // PART 1
+                switch (digit.length) {
+                    case 2: // 1 digit
+                        totalUniqueOutputDigits++;
+                        break;
+                    case 4: // 4 digit
+                        totalUniqueOutputDigits++;
+                        break;
+                    case 3: // 7 digit
+                        totalUniqueOutputDigits++;
+                        break;
+                    case 7: // 8 digit
+                        totalUniqueOutputDigits++;
+                        break;
+                }
+
+                outputValue += digitDisplay.toInt(digit);
+            });
+            sumOutputValues += parseInt(outputValue);
+        });
+
+        consola.info('Total unique output digits: ', totalUniqueOutputDigits, ' Total output value: ', sumOutputValues);
+
+        return ({ totalUnique: totalUniqueOutputDigits, outputSum: sumOutputValues });
     }
-
-
 }
 
 class DigitDisplay {
@@ -571,9 +564,7 @@ class DigitDisplay {
             g: null,
         };
 
-        this.cfLocked = false;
-        this.bdLocked = false;
-        this.egLocked = false;
+        this.intCache = {};
     }
 
     setDefaultSegments() {
@@ -587,13 +578,12 @@ class DigitDisplay {
     }
 
     /**
-     * Assigns the digit 1 sequence characters to the default map not including, the 'cf' part
+     * Assigns the digit 1 sequence characters to the default map, the 'cf' part
      * @param sequence random 2 character sequence
      */
     set1(sequence) {
         this.segmentMap.c = sequence[0];
         this.segmentMap.f = sequence[1];
-        this.cfLocked = false;
     }
 
     /**
@@ -604,7 +594,6 @@ class DigitDisplay {
         const bd = this.removeCharactersFromString(sequence, this.get1());
         this.segmentMap.b = bd[0];
         this.segmentMap.d = bd[1];
-        this.bdLocked = false;
     }
 
     /**
@@ -624,48 +613,134 @@ class DigitDisplay {
         const eg = this.removeCharactersFromString(sequence, charactersToRemove);
         this.segmentMap.e = eg[0];
         this.segmentMap.g = eg[1];
-        this.egLocked = false;
     }
 
     get0() {
-        return this.segmentMap.a +
+        const zero = this.segmentMap.a +
             this.segmentMap.b +
             this.segmentMap.c +
             this.segmentMap.e +
             this.segmentMap.f +
             this.segmentMap.g;
+        return this.sortAlphabetic(zero);
     }
 
     get1() {
-        return this.segmentMap.c +
+        const one = this.segmentMap.c +
             this.segmentMap.f;
+        return this.sortAlphabetic(one);
+    }
+
+    get2() {
+        const two = this.segmentMap.a +
+            this.segmentMap.c +
+            this.segmentMap.d +
+            this.segmentMap.e +
+            this.segmentMap.g;
+        return this.sortAlphabetic(two);
+    }
+
+    get3() {
+        const three = this.segmentMap.a +
+            this.segmentMap.c +
+            this.segmentMap.d +
+            this.segmentMap.f +
+            this.segmentMap.g;
+        return this.sortAlphabetic(three);
     }
 
     get4() {
-        return this.segmentMap.b +
-            this.segmentMap.d +
+        const four = this.segmentMap.b +
             this.segmentMap.c +
+            this.segmentMap.d +
+            this.segmentMap.f;
+        return this.sortAlphabetic(four);
+    }
+
+    get5() {
+        const five = this.segmentMap.a +
+            this.segmentMap.b +
+            this.segmentMap.d +
+            this.segmentMap.f +
             this.segmentMap.g;
+        return this.sortAlphabetic(five);
+    }
+
+    get6() {
+        const six = this.segmentMap.a +
+            this.segmentMap.b +
+            this.segmentMap.d +
+            this.segmentMap.e +
+            this.segmentMap.f +
+            this.segmentMap.g;
+        return this.sortAlphabetic(six);
     }
 
     get7() {
-        return this.segmentMap.a +
+        const seven = this.segmentMap.a +
             this.segmentMap.c +
             this.segmentMap.f;
+        return this.sortAlphabetic(seven);
     }
 
     get8() {
-        return this.segmentMap.a +
+        const eight = this.segmentMap.a +
             this.segmentMap.b +
             this.segmentMap.c +
             this.segmentMap.d +
             this.segmentMap.e +
             this.segmentMap.f +
             this.segmentMap.g;
+        return this.sortAlphabetic(eight);
+    }
+
+    get9() {
+        const nine = this.segmentMap.a +
+            this.segmentMap.b +
+            this.segmentMap.c +
+            this.segmentMap.d +
+            this.segmentMap.f +
+            this.segmentMap.g;
+        return this.sortAlphabetic(nine);
     }
 
     decode(segmentString) {
 
+    }
+
+    /**
+     * Tune the sequence map from a 6 character digit string which only include the numbers 0 and 6,
+     * based on this we can lock-in all but the other digits except the number 5 which we're still not sure about,
+     * but can easily account for later.
+     */
+    tuneSixCharacterDigit(sequence) {
+        if (sequence.length !== 6) {
+            return;
+        }
+
+        // sort input alphabetically
+        sequence = this.sortAlphabetic(sequence);
+
+        const sequenceTranslated = this.translate(sequence);
+
+        if (sequenceTranslated === 'acdefg') {
+            // Invalid zero sequence, need to swap 'bd' segments
+            const t = this.segmentMap.b;
+            this.segmentMap.b = this.segmentMap.d;
+            this.segmentMap.d = t;
+        }
+        else if (sequenceTranslated === 'abcdeg') {
+            // invalid six sequence, need to swap 'cf' segments
+            const t = this.segmentMap.c;
+            this.segmentMap.c = this.segmentMap.f;
+            this.segmentMap.f = t;
+        }
+        else if (sequenceTranslated === 'abcdef') {
+            // Invalid Nine sequence, need to swap 'eg' segments
+            const t = this.segmentMap.e;
+            this.segmentMap.e = this.segmentMap.g;
+            this.segmentMap.g = t;
+        }
     }
 
     /**
@@ -678,5 +753,41 @@ class DigitDisplay {
         const pattern = `[${stringB}]`;
         const regEx = new RegExp(pattern, 'g');
         return stringA.replace(regEx, '');
+    }
+
+    sortAlphabetic(string) {
+        return string.split('').sort().join('');
+    }
+
+    translate(sequence) {
+        sequence = this.sortAlphabetic(sequence);
+        let translatedSequence = '';
+
+        for (const [key, value] of Object.entries(this.segmentMap)) {
+            if (sequence.includes(value)) {
+                translatedSequence += key;
+            }
+        }
+
+        return this.sortAlphabetic(translatedSequence);
+    }
+
+    generateIntCache() {
+        this.intCache[this.get0()] = 0;
+        this.intCache[this.get1()] = 1;
+        this.intCache[this.get2()] = 2;
+        this.intCache[this.get3()] = 3;
+        this.intCache[this.get4()] = 4;
+        this.intCache[this.get5()] = 5;
+        this.intCache[this.get6()] = 6;
+        this.intCache[this.get7()] = 7;
+        this.intCache[this.get8()] = 8;
+        this.intCache[this.get9()] = 9;
+    }
+
+    toInt(sequence) {
+        sequence = this.sortAlphabetic(sequence);
+        this.generateIntCache();
+        return this.intCache[sequence];
     }
 }
