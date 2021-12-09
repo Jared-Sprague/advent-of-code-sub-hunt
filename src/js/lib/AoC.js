@@ -540,7 +540,7 @@ export default class AoC {
                         break;
                 }
 
-                outputValue += digitDisplay.toInt(digit);
+                outputValue += digitDisplay.decode(digit);
             });
             sumOutputValues += parseInt(outputValue);
         });
@@ -694,10 +694,6 @@ class DigitDisplay {
         return this.sortAlphabetic(nine);
     }
 
-    decode(segmentString) {
-
-    }
-
     /**
      * Tune the sequence map from a 6 character digit string which only include the numbers 0 and 6,
      * based on this we can lock-in all but the other digits except the number 5 which we're still not sure about,
@@ -775,7 +771,7 @@ class DigitDisplay {
         this.intCache[this.get9()] = 9;
     }
 
-    toInt(sequence) {
+    decode(sequence) {
         sequence = this.sortAlphabetic(sequence);
         this.generateIntCache();
         return this.intCache[sequence];
