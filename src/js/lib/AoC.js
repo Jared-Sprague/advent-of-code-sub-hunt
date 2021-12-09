@@ -635,11 +635,16 @@ export default class AoC {
 
         // Multiply the largest 3 basins together to get the answer
         const basinsArray = Object.values(basins).sort((a, b) => a - b).reverse();
-        const answer = basinsArray[0] * basinsArray[1] * basinsArray[2];
+        const answerPart2 = basinsArray[0] * basinsArray[1] * basinsArray[2];
 
-        consola.info('[DAY 9-2] Basins answer:', answer);
+        consola.info('[DAY 9-2] Basins answer:', answerPart2);
+
+        return { riskLevelPart1: riskLevelPart1, answerPart2: answerPart2 };
     }
 
+    /**
+     * Recursively follow the flow to the nearest basin
+     */
     static findBasinId(nodeId) {
         const idPair = nodeId.split('-');
         const node = this.heightMesh[idPair[0]][idPair[1]];
