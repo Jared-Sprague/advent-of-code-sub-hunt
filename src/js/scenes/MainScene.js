@@ -190,6 +190,13 @@ export default class MainScene extends Phaser.Scene {
         this.gift8.setPipeline('Light2D');
         this.gift8.angle = -25;
 
+        // DAY 8
+        this.day9Input = this.cache.text.get('day9-input');
+        // this.gift8 = this.add.sprite(1180, 1620, 'gift-8');
+        // this.gift8.setPipeline('Light2D');
+        // this.gift8.angle = -25;
+        AoC.day9(this.day9Input);
+
         // Place Shipwreck and loot
         this.createShipwreckLoot();
 

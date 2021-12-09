@@ -1,3 +1,5 @@
+// noinspection JSSuspiciousNameCombination
+
 import _ from './lodash.min.js';
 import config from '../config';
 const consola = require('consola').withTag('AoC');
@@ -426,6 +428,7 @@ export default class AoC {
         return _.sum(fishDaysArray);
     }
 
+    // DAY 7
     static getLeastFuel(crabPositions, part1 = true) {
         let leastFuel = Infinity;
         let optimalPosition;
@@ -548,6 +551,81 @@ export default class AoC {
         consola.info('Total unique output digits: ', totalUniqueOutputDigits, ' Total output value: ', sumOutputValues);
 
         return ({ totalUnique: totalUniqueOutputDigits, outputSum: sumOutputValues });
+    }
+
+    // DAY 9
+    static day9(input) {
+        input = input.trim();
+        const lines = input.split('\n');
+        const heightMesh = [];
+        let riskLevelPart1 = 0;
+
+        // Build the Height Mesh
+        for (const [i, line] of lines.entries()) {
+            const heights = line.split('');
+            heightMesh.push([]);
+
+            for (let [j, height] of heights.entries()) {
+                height = parseInt(height);
+                const heightNode = new HeightNode(height);
+
+                if (i === 0 && j > 0) {
+                    // create left/right relationship with previous height node
+                    const previousNode = heightMesh[i][j - 1];
+                    heightNode.neighborLeft = previousNode.height;
+                    previousNode.neighborRight = height;
+                }
+                else if (i > 0 && j === 0) {
+                    // only add neighbor UP
+                    const neighborUp = heightMesh[i - 1][j];
+                    heightNode.neighborUp = neighborUp.height;
+                    neighborUp.neighborDown = height;
+                }
+                else if (i > 0 && j > 0) {
+                    // Add up/down/left/right relationships
+                    const neighborUp = heightMesh[i - 1][j];
+                    const previousNode = heightMesh[i][j - 1];
+                    heightNode.neighborLeft = previousNode.height;
+                    previousNode.neighborRight = height;
+                    heightNode.neighborUp = neighborUp.height;
+                    neighborUp.neighborDown = height;
+                }
+
+                heightMesh[i].push(heightNode);
+            }
+        }
+
+
+        // Part 1
+        for (let i = 0; i < heightMesh.length; i++) {
+            const nodes = heightMesh[i];
+            for (let j = 0; j < nodes.length; j++) {
+                const node = nodes[j];
+                if (node.isLowerThanNeighbors()) {
+                    consola.info('lowest point:', node.height);
+                    riskLevelPart1 += node.height + 1;
+                }
+            }
+        }
+
+        consola.info('[DAY 9-1] Risk level:', riskLevelPart1);
+    }
+}
+
+class HeightNode {
+    constructor(height) {
+        this.neighborUp = Infinity;
+        this.neighborDown = Infinity;
+        this.neighborLeft = Infinity;
+        this.neighborRight = Infinity;
+        this.height = height;
+    }
+
+    isLowerThanNeighbors() {
+        return (this.height < this.neighborUp &&
+            this.height < this.neighborDown &&
+            this.height < this.neighborLeft &&
+            this.height < this.neighborRight);
     }
 }
 
