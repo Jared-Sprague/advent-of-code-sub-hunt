@@ -661,6 +661,46 @@ export default class AoC {
             return this.findBasinId(lowestNodeId);
         }
     }
+
+    static generateDay9HTML(input) {
+        input = input.trim();
+        const lines = input.split('\n');
+        let outputHTML = `
+            <html lang="">
+            <head title="fillUP">
+                <style>
+                    .filled {
+                        color: red;
+                    }
+                    .unfilled {
+                        color: blue;
+                    }
+                    p { margin:0 }
+                </style>
+            </head>
+            <body>
+        `;
+
+        // generate HTML
+        for (const [i, line] of lines.entries()) {
+            const heights = line.split('');
+
+            outputHTML += `
+<p>`;
+            for (const [j, height] of heights.entries()) {
+                const nodeId = `${i}-${j}`;
+                height = parseInt(height);
+
+                outputHTML += `<span id="${nodeId}" class="unfilled">${height}</span>
+`;
+            }
+            outputHTML += `</p>
+`;
+        }
+
+        outputHTML += '</body></html>';
+        consola.log('output length:', outputHTML);
+    }
 }
 
 class HeightNode {
