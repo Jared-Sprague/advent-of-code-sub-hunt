@@ -153,6 +153,7 @@ export default class PreloadScene extends Phaser.Scene {
         this.load.text('day7-crabs', 'assets/json/day7-crabs.txt');
         this.load.text('day8-input', 'assets/json/day8-input.txt');
         this.load.text('day9-input', 'assets/json/day9-input-small.txt');
+        this.load.text('day10-input', 'assets/json/day10-input.txt');
     }
 
     /**

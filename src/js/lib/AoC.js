@@ -701,6 +701,85 @@ export default class AoC {
         outputHTML += '</body></html>';
         consola.log('output length:', outputHTML);
     }
+
+    static day10(input) {
+        input = input.trim();
+        const lines = input.split('\n');
+        const closingCharacters = ')]}>';
+        const openingCharacters = '([{<';
+        const pointValue = {
+            ')': 3,
+            ']': 57,
+            '}': 1197,
+            '>': 25137,
+        };
+        const invalidCharsFound = [];
+        let points = 0;
+
+        consola.info('lines:', lines.length);
+
+        for (const line of lines) {
+            const charArray = line.split('');
+            for (const [i, char] of charArray.entries()) {
+                if (closingCharacters.includes(char)) {
+                    let numOpening = 0;
+                    let numClosing = 1;
+                    let numThisCharClosing = 1;
+                    let numThisCharOpening = 0;
+                    let j = i - 1;
+
+                    if (charArray[j] === this.openingOf(char)) {
+                        numOpening++;
+                        numThisCharOpening++;
+                    }
+
+                    // charArray[j] !== this.openingOf(char)
+                    while (j >= 0  && numOpening !== numClosing && numThisCharOpening !== numThisCharClosing) {
+                        const backChar = charArray[j];
+                        if (openingCharacters.includes(backChar)) {
+                            numOpening++;
+                            if (backChar === this.openingOf(char)) {
+                                numThisCharOpening++;
+                            }
+                        }
+                        else if (closingCharacters.includes(backChar)) {
+                            numClosing++;
+                            if (backChar === char) {
+                                numThisCharClosing++;
+                            }
+                        }
+                        j--;
+                    }
+
+                    if (numOpening !== numClosing || numThisCharOpening !== numThisCharClosing) {
+                        consola.info('found invalid line:', line, ' invalid char:', char);
+                        invalidCharsFound.push(char);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // sum points
+        for (const invalidChar of invalidCharsFound) {
+            points += pointValue[invalidChar];
+        }
+
+        consola.info('[Day 10-1] points:', points);
+    }
+
+    static openingOf(char) {
+        switch (char) {
+            case ')':
+                return '(';
+            case ']':
+                return '[';
+            case '}':
+                return '{';
+            case '>':
+                return '<';
+        }
+    }
 }
 
 class HeightNode {
