@@ -754,6 +754,8 @@ export default class AoC {
         const medianIndex = (part2Points.length - 1) / 2;
 
         console.info('[DAY 10-2] points:', part2Points[medianIndex]);
+
+        return { part1Points: part1Points, part2Points: part2Points[medianIndex] };
     }
 
     static clearCompleteChunks(line) {
