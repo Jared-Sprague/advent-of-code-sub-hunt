@@ -196,6 +196,11 @@ export default class MainScene extends Phaser.Scene {
         this.gift9.setPipeline('Light2D');
         this.gift9.angle = 5;
 
+        // DAY 10
+        this.day10Input = this.cache.text.get('day10-input');
+        this.gift10 = this.add.sprite(1120, 2070, 'gift-10');
+        this.gift10.setPipeline('Light2D');
+        this.gift10.angle = -7;
 
         // Place Shipwreck and loot
         this.createShipwreckLoot();
@@ -493,6 +498,18 @@ export default class MainScene extends Phaser.Scene {
 
             this.gift9.destroy();
             this.gift9 = null;
+        }
+        else if (this.gift10 && this.checkSubGiftIntersect(this.gift10)) {
+            consola.info('Collided with gift 10');
+
+            const result = AoC.day10(this.day10Input);
+            consola.log('[DAY 10] part 1 points:', result.part1Points, ' part 2 points:', result.part2Points);
+
+            // Speech Bubble
+            this.sub.createSpeechBubble(400, 110, 'Syntax fixed, Captain!');
+
+            this.gift10.destroy();
+            this.gift10 = null;
         }
     }
 

@@ -17,6 +17,7 @@
         "space-infix-ops": "error",
         "space-in-parens": "error",
         "no-multi-spaces": "off",
+        "no-useless-escape": "off",
         "require-jsdoc": "off",
         "valid-jsdoc": "off",
         "no-console": "off",

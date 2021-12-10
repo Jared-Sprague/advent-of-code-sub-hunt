@@ -3,6 +3,7 @@
 import _ from './lodash.min.js';
 import config from '../config';
 import DigitDisplay from './DigitDisplay';
+import HeightNode from './HeightNode';
 
 const consola = require('consola').withTag('AoC');
 consola.level = config.LOG_LEVEL;
@@ -661,55 +662,201 @@ export default class AoC {
             return this.findBasinId(lowestNodeId);
         }
     }
-}
 
-class HeightNode {
-    constructor(height, id) {
-        this.nodeId = id;
-        this.height = height;
-        this.basinId = null;
-        this.neighborUp = { height: Infinity, nodeId: null };
-        this.neighborDown = { height: Infinity, nodeId: null };
-        this.neighborLeft = { height: Infinity, nodeId: null };
-        this.neighborRight = { height: Infinity, nodeId: null };
+    static generateDay9HTML(input) {
+        input = input.trim();
+        const lines = input.split('\n');
+        let outputHTML = `
+            <html lang="">
+            <head title="fillUP">
+                <style>
+                    .filled {
+                        color: red;
+                    }
+                    .unfilled {
+                        color: blue;
+                    }
+                    p { margin:0 }
+                </style>
+            </head>
+            <body>
+        `;
+
+        // generate HTML
+        for (const [i, line] of lines.entries()) {
+            const heights = line.split('');
+
+            outputHTML += `
+<p>`;
+            for (const [j, height] of heights.entries()) {
+                const nodeId = `${i}-${j}`;
+                height = parseInt(height);
+
+                outputHTML += `<span id="${nodeId}" class="unfilled">${height}</span>
+`;
+            }
+            outputHTML += `</p>
+`;
+        }
+
+        outputHTML += '</body></html>';
+        consola.log('output length:', outputHTML);
     }
 
-    getLowestNeighborNodeId() {
-        if (this.isLowerThanNeighbors()) {
-            return this.nodeId;
+    // DAY 10
+    static day10(input) {
+        input = input.trim();
+        const lines = input.split('\n');
+        const part1PointsValues = { ')': 3, ']': 57, '}': 1197, '>': 25137 };
+        const part2PointsValues = { ')': 1, ']': 2, '}': 3, '>': 4 };
+        let part1Points = 0;
+        const validLines = [];
+        const invalidCharsFound = [];
+        const completedParts = [];
+        const part2Points = [];
+
+        // Part 1
+        for (const line of lines) {
+            const chunkData = this.findChunkReverse(line);
+            if (chunkData.isValid) {
+                validLines.push(line);
+            }
+            else {
+                invalidCharsFound.push(chunkData.invalidCharsFound);
+            }
+        }
+
+        // sum invalid points
+        for (const invalidChar of invalidCharsFound) {
+            part1Points += part1PointsValues[invalidChar];
+        }
+
+        consola.info('[Day 10-1] points:', part1Points);
+
+        // part 2
+        for (const line of validLines) {
+            const incompletePart = this.clearCompleteChunks(line);
+            const completed = this.mirror(incompletePart);
+            completedParts.push(completed);
+            consola.info('Completed line:', incompletePart, completed);
+        }
+
+        // Sum points for part 2
+        for (const completedChars of completedParts) {
+            let points = 0;
+            for (const char of completedChars) {
+                points *= 5;
+                points += part2PointsValues[char];
+            }
+            part2Points.push(points);
+        }
+        part2Points.sort((a, b) => a - b);
+        const medianIndex = (part2Points.length - 1) / 2;
+
+        console.info('[DAY 10-2] points:', part2Points[medianIndex]);
+
+        return { part1Points: part1Points, part2Points: part2Points[medianIndex] };
+    }
+
+    static clearCompleteChunks(line) {
+        const closingCharsRegEx = /[\)\]\}\>]/;
+        if (!closingCharsRegEx.exec(line)) {
+            return line;
         }
         else {
-            let lowestNeighbor = { nodeId: null, height: Infinity };
-            if (this.neighborUp.height < lowestNeighbor.height) {
-                lowestNeighbor = this.neighborUp;
-            }
-
-            if (this.neighborDown.height < lowestNeighbor.height) {
-                lowestNeighbor = this.neighborDown;
-            }
-
-            if (this.neighborLeft.height < lowestNeighbor.height) {
-                lowestNeighbor = this.neighborLeft;
-            }
-
-            if (this.neighborRight.height < lowestNeighbor.height) {
-                lowestNeighbor = this.neighborRight;
-            }
-
-            return lowestNeighbor.nodeId;
+            // remove next chunk and run again recursively
+            const chunkData = this.findChunkReverse(line, false);
+            const lineStripped = line.replace(chunkData.chunk, '');
+            return this.clearCompleteChunks(lineStripped);
         }
     }
 
-    isLowerThanNeighbors() {
-        const isLowest = this.height < this.neighborUp.height &&
-            this.height < this.neighborDown.height &&
-            this.height < this.neighborLeft.height &&
-            this.height < this.neighborRight.height;
+    static findChunkReverse(line, global = true) {
+        const closingCharacters = ')]}>';
+        const openingCharacters = '([{<';
+        const charArray = line.split('');
+        let isValid = true;
+        const chunkCharacters = [];
+        const invalidCharsFound = [];
 
-        if (!this.basinId && isLowest) {
-            this.basinId = this.nodeId;
+        for (const [i, char] of charArray.entries()) {
+            if (closingCharacters.includes(char)) {
+                let numOpening = 0;
+                let numClosing = 1;
+                let numThisCharClosing = 1;
+                let numThisCharOpening = 0;
+                let j = i - 1;
+
+                const firstBackChar = charArray[j];
+                if (firstBackChar === this.invertSingle(char)) {
+                    numOpening++;
+                    numThisCharOpening++;
+                }
+                chunkCharacters.unshift(firstBackChar, char);
+
+
+                while (j >= 0  && numOpening !== numClosing && numThisCharOpening !== numThisCharClosing) {
+                    const backChar = charArray[j];
+                    chunkCharacters.unshift(backChar);
+                    if (openingCharacters.includes(backChar)) {
+                        numOpening++;
+                        if (backChar === this.invertSingle(char)) {
+                            numThisCharOpening++;
+                        }
+                    }
+                    else if (closingCharacters.includes(backChar)) {
+                        numClosing++;
+                        if (backChar === char) {
+                            numThisCharClosing++;
+                        }
+                    }
+                    j--;
+                }
+
+                if (numOpening !== numClosing || numThisCharOpening !== numThisCharClosing) {
+                    consola.info('found invalid line:', line, ' invalid char:', char);
+                    invalidCharsFound.push(char);
+                    isValid = false;
+                    break;
+                }
+                else if (!global) {
+                    // return first chunk match
+                    return { isValid: isValid, chunk: chunkCharacters.join('') };
+                }
+            }
         }
 
-        return isLowest;
+        return { isValid: isValid, chunk: chunkCharacters.join(''), invalidCharsFound: invalidCharsFound };
+    }
+
+    static mirror(string) {
+        const mirroredChars = [];
+
+        for (const char of string) {
+            mirroredChars.unshift(this.invertSingle(char));
+        }
+
+        return mirroredChars.join('');
+    }
+
+    static invertSingle(char) {
+        switch (char) {
+            case ')':
+                return '(';
+            case ']':
+                return '[';
+            case '}':
+                return '{';
+            case '>':
+                return '<';
+            case '(':
+                return ')';
+            case '[':
+                return ']';
+            case '{':
+                return '}';
+            case '<':
+                return '>';
+        }
     }
 }
