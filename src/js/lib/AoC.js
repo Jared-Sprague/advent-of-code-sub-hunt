@@ -703,6 +703,7 @@ export default class AoC {
         consola.log('output length:', outputHTML);
     }
 
+    // DAY 10
     static day10(input) {
         input = input.trim();
         const lines = input.split('\n');
@@ -713,8 +714,6 @@ export default class AoC {
         const invalidCharsFound = [];
         const completedParts = [];
         const part2Points = [];
-
-        consola.info('lines:', lines.length);
 
         // Part 1
         for (const line of lines) {
