@@ -705,70 +705,139 @@ export default class AoC {
     static day10(input) {
         input = input.trim();
         const lines = input.split('\n');
-        const closingCharacters = ')]}>';
-        const openingCharacters = '([{<';
-        const pointValue = {
-            ')': 3,
-            ']': 57,
-            '}': 1197,
-            '>': 25137,
-        };
+        const part1PointsValues = { ')': 3, ']': 57, '}': 1197, '>': 25137 };
+        const part2PointsValues = { ')': 1, ']': 2, '}': 3, '>': 4 };
+        let part1Points = 0;
+        const validLines = [];
         const invalidCharsFound = [];
-        let points = 0;
+        const completedParts = [];
+        const part2Points = [];
 
         consola.info('lines:', lines.length);
 
+        // Part 1
         for (const line of lines) {
-            const charArray = line.split('');
-            for (const [i, char] of charArray.entries()) {
-                if (closingCharacters.includes(char)) {
-                    let numOpening = 0;
-                    let numClosing = 1;
-                    let numThisCharClosing = 1;
-                    let numThisCharOpening = 0;
-                    let j = i - 1;
+            const chunkData = this.findChunkReverse(line);
+            if (chunkData.isValid) {
+                validLines.push(line);
+            }
+            else {
+                invalidCharsFound.push(chunkData.invalidCharsFound);
+            }
+        }
 
-                    if (charArray[j] === this.openingOf(char)) {
+        // sum invalid points
+        for (const invalidChar of invalidCharsFound) {
+            part1Points += part1PointsValues[invalidChar];
+        }
+
+        consola.info('[Day 10-1] points:', part1Points);
+
+        // part 2
+        for (const line of validLines) {
+            const incompletePart = this.clearCompleteChunks(line);
+            const completed = this.mirror(incompletePart);
+            completedParts.push(completed);
+            consola.info('Completed line:', incompletePart, completed);
+        }
+
+        // Sum points for part 2
+        for (const completedChars of completedParts) {
+            let points = 0;
+            for (const char of completedChars) {
+                points *= 5;
+                points += part2PointsValues[char];
+            }
+            part2Points.push(points);
+        }
+        part2Points.sort((a, b) => a - b);
+        const medianIndex = (part2Points.length - 1) / 2;
+
+        console.info('[DAY 10-2] points:', part2Points[medianIndex]);
+    }
+
+    static clearCompleteChunks(line) {
+        const closingCharsRegEx = /[\)\]\}\>]/;
+        if (!closingCharsRegEx.exec(line)) {
+            return line;
+        }
+        else {
+            // remove next chunk and run again recursively
+            const chunkData = this.findChunkReverse(line, false);
+            const lineStripped = line.replace(chunkData.chunk, '');
+            return this.clearCompleteChunks(lineStripped);
+        }
+    }
+
+    static findChunkReverse(line, global = true) {
+        const closingCharacters = ')]}>';
+        const openingCharacters = '([{<';
+        const charArray = line.split('');
+        let isValid = true;
+        const chunkCharacters = [];
+        const invalidCharsFound = [];
+
+        for (const [i, char] of charArray.entries()) {
+            if (closingCharacters.includes(char)) {
+                let numOpening = 0;
+                let numClosing = 1;
+                let numThisCharClosing = 1;
+                let numThisCharOpening = 0;
+                let j = i - 1;
+
+                const firstBackChar = charArray[j];
+                if (firstBackChar === this.invertSingle(char)) {
+                    numOpening++;
+                    numThisCharOpening++;
+                }
+                chunkCharacters.unshift(firstBackChar, char);
+
+
+                while (j >= 0  && numOpening !== numClosing && numThisCharOpening !== numThisCharClosing) {
+                    const backChar = charArray[j];
+                    chunkCharacters.unshift(backChar);
+                    if (openingCharacters.includes(backChar)) {
                         numOpening++;
-                        numThisCharOpening++;
-                    }
-
-                    // charArray[j] !== this.openingOf(char)
-                    while (j >= 0  && numOpening !== numClosing && numThisCharOpening !== numThisCharClosing) {
-                        const backChar = charArray[j];
-                        if (openingCharacters.includes(backChar)) {
-                            numOpening++;
-                            if (backChar === this.openingOf(char)) {
-                                numThisCharOpening++;
-                            }
+                        if (backChar === this.invertSingle(char)) {
+                            numThisCharOpening++;
                         }
-                        else if (closingCharacters.includes(backChar)) {
-                            numClosing++;
-                            if (backChar === char) {
-                                numThisCharClosing++;
-                            }
+                    }
+                    else if (closingCharacters.includes(backChar)) {
+                        numClosing++;
+                        if (backChar === char) {
+                            numThisCharClosing++;
                         }
-                        j--;
                     }
+                    j--;
+                }
 
-                    if (numOpening !== numClosing || numThisCharOpening !== numThisCharClosing) {
-                        consola.info('found invalid line:', line, ' invalid char:', char);
-                        invalidCharsFound.push(char);
-                        break;
-                    }
+                if (numOpening !== numClosing || numThisCharOpening !== numThisCharClosing) {
+                    consola.info('found invalid line:', line, ' invalid char:', char);
+                    invalidCharsFound.push(char);
+                    isValid = false;
+                    break;
+                }
+                else if (!global) {
+                    // return first chunk match
+                    return { isValid: isValid, chunk: chunkCharacters.join('') };
                 }
             }
         }
 
-        // sum points
-        for (const invalidChar of invalidCharsFound) {
-            points += pointValue[invalidChar];
-        }
-
-        consola.info('[Day 10-1] points:', points);
+        return { isValid: isValid, chunk: chunkCharacters.join(''), invalidCharsFound: invalidCharsFound };
     }
 
-    static openingOf(char) {
+    static mirror(string) {
+        const mirroredChars = [];
+
+        for (const char of string) {
+            mirroredChars.unshift(this.invertSingle(char));
+        }
+
+        return mirroredChars.join('');
+    }
+
+    static invertSingle(char) {
         switch (char) {
             case ')':
                 return '(';
@@ -778,6 +847,14 @@ export default class AoC {
                 return '{';
             case '>':
                 return '<';
+            case '(':
+                return ')';
+            case '[':
+                return ']';
+            case '{':
+                return '}';
+            case '<':
+                return '>';
         }
     }
 }
