@@ -4,6 +4,7 @@ import _ from './lodash.min.js';
 import config from '../config';
 import DigitDisplay from './DigitDisplay';
 import HeightNode from './HeightNode';
+import OctoNode from './OctoNode';
 
 const consola = require('consola').withTag('AoC');
 consola.level = config.LOG_LEVEL;
@@ -688,7 +689,7 @@ export default class AoC {
 
             outputHTML += `
 <p>`;
-            for (const [j, height] of heights.entries()) {
+            for (let [j, height] of heights.entries()) {
                 const nodeId = `${i}-${j}`;
                 height = parseInt(height);
 
@@ -858,5 +859,125 @@ export default class AoC {
             case '<':
                 return '>';
         }
+    }
+
+    // DAY 11
+    static day11(input) {
+        const lines = input.trim().split('\n');
+        // build the same graph as with basins, but add diagonal
+        this.octoMesh = [];
+        const STEPS_NUM = 500;
+
+        // Build the Height Mesh
+        for (const [i, line] of lines.entries()) {
+            const powers = line.split('');
+            this.octoMesh.push([]);
+
+            for (let [j, power] of powers.entries()) {
+                power = parseInt(power);
+                const nodeId = `${i}-${j}`;
+                const octoNode = new OctoNode(power, nodeId);
+
+                if (i === 0 && j > 0) {
+                    // create left/right relationship with previous height node
+                    const previousNode = this.octoMesh[i][j - 1];
+                    octoNode.neighborLeft.power = previousNode.power;
+                    octoNode.neighborLeft.nodeId = previousNode.nodeId;
+                    previousNode.neighborRight.power = power;
+                    previousNode.neighborRight.nodeId = nodeId;
+                }
+                else if (i > 0 && j === 0) {
+                    // only add neighbor UP
+                    const nodeUp = this.octoMesh[i - 1][j];
+                    octoNode.neighborUp.power = nodeUp.power;
+                    octoNode.neighborUp.nodeId = nodeUp.nodeId;
+                    nodeUp.neighborDown.power = power;
+                    nodeUp.neighborDown.nodeId = nodeId;
+
+                    // add neighbor UP and Right diagonal relationship
+                    const nodeUpRight = this.octoMesh[i - 1][j + 1];
+                    octoNode.neighborUpRight.power = nodeUpRight.power;
+                    octoNode.neighborUpRight.nodeId = nodeUpRight.nodeId;
+                    nodeUpRight.neighborDownLeft.power = power;
+                    nodeUpRight.neighborDownLeft.nodeId = nodeId;
+                }
+                else if (i > 0 && j > 0) {
+                    // Add up/down/left/right relationships
+                    const nodeUp = this.octoMesh[i - 1][j];
+                    const previousNode = this.octoMesh[i][j - 1];
+                    octoNode.neighborLeft.power = previousNode.power;
+                    octoNode.neighborLeft.nodeId = previousNode.nodeId;
+                    previousNode.neighborRight.power = power;
+                    previousNode.neighborRight.nodeId = nodeId;
+                    octoNode.neighborUp.power = nodeUp.power;
+                    octoNode.neighborUp.nodeId = nodeUp.nodeId;
+                    nodeUp.neighborDown.power = power;
+                    nodeUp.neighborDown.nodeId = nodeId;
+
+                    // Add UP-Left
+                    const nodeUpLeft = this.octoMesh[i - 1][j - 1];
+                    octoNode.neighborUpLeft.power = nodeUpLeft.power;
+                    octoNode.neighborUpLeft.nodeId = nodeUpLeft.nodeId;
+                    nodeUpLeft.neighborDownRight.power = power;
+                    nodeUpLeft.neighborDownRight.nodeId = nodeId;
+
+
+                    // only add UP-Right if we're not at the end
+                    if (j < powers.length - 1) {
+                        const nodeUpRight = this.octoMesh[i - 1][j + 1];
+                        octoNode.neighborUpRight.power = nodeUpRight.power;
+                        octoNode.neighborUpRight.nodeId = nodeUpRight.nodeId;
+                        nodeUpRight.neighborDownLeft.power = power;
+                        nodeUpRight.neighborDownLeft.nodeId = nodeId;
+                    }
+                }
+
+                this.octoMesh[i].push(octoNode);
+            }
+        }
+
+        // now that the mesh is built simulate the steps
+        for (let i = 0; i < STEPS_NUM; ++i) {
+            // Increment step
+            for (const nodes of this.octoMesh) {
+                for (const node of nodes) {
+                    // first part of the step is to increment all by 1;
+                    node.stepNum++;
+                    node.power++;
+                }
+            }
+
+            // now check for flashes and cascades
+            for (const nodes of this.octoMesh) {
+                for (const node of nodes) {
+                    node.nextStep(this.octoMesh);
+                }
+            }
+
+            // part 2 - check if all Octo's flashed during this step
+            let numFlashedInStep = 0;
+            for (const nodes of this.octoMesh) {
+                for (const node of nodes) {
+                    if (node.flashedThisStep()) {
+                        numFlashedInStep += 1;
+                    }
+                }
+            }
+
+            if (numFlashedInStep === 100) {
+                consola.info('Step where all flashed: ', i + 1);
+                break;
+            }
+        }
+
+        // Part 1 - sum total flashes
+        let totalFlashes = 0;
+        for (const nodes of this.octoMesh) {
+            for (const node of nodes) {
+                totalFlashes += node.totalFlashes;
+            }
+        }
+
+        consola.info('After', STEPS_NUM, 'steps, total flashes:', totalFlashes);
     }
 }
