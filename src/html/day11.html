@@ -1,0 +1,195 @@
+<html lang="">
+<head title="OctoFlash!">
+    <style>
+        .flash {
+            color: white;
+            animation: neon3 1.5s ease-in-out infinite alternate;
+        }
+
+        .normal {
+            color: white;
+        }
+
+        p {
+            margin: 0
+        }
+
+        span {
+            margin: 10px;
+            text-align: center;
+            font-size: 6em;
+            font-family: monospace;
+        }
+
+        @keyframes neon3 {
+            from {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ffdd1b,
+                0 0 70px #ffdd1b, 0 0 80px #ffdd1b, 0 0 100px #ffdd1b, 0 0 150px #ffdd1b;
+            }
+            to {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ffdd1b,
+                0 0 35px #ffdd1b, 0 0 40px #ffdd1b, 0 0 50px #ffdd1b, 0 0 75px #ffdd1b;
+            }
+        }
+
+        body {
+            background: #222222;
+        }
+
+        #container {
+            margin: 30px;
+            display: flex;
+            flex-direction: column;
+            align-content: center;
+            width: 100%;
+            /*gap: 4rem;*/
+        }
+
+        @media (max-width: 650px) {
+            p {
+                font-size: 3.5em;
+            }
+        }
+
+    </style>
+
+    <script src="day11.js"></script>
+
+</head>
+<body onload="day11(`
+2138862165
+2726378448
+3235172758
+6281242643
+4256223158
+1112268142
+1162836182
+1543525861
+1882656326
+8844263151
+`)">
+
+<div align="center" id="container">
+    <p><span id="0-0" class="normal">2</span>
+        <span id="0-1" class="normal">1</span>
+        <span id="0-2" class="normal">3</span>
+        <span id="0-3" class="normal">8</span>
+        <span id="0-4" class="normal">8</span>
+        <span id="0-5" class="normal">6</span>
+        <span id="0-6" class="normal">2</span>
+        <span id="0-7" class="normal">1</span>
+        <span id="0-8" class="normal">6</span>
+        <span id="0-9" class="normal">5</span>
+    </p>
+
+    <p><span id="1-0" class="normal">2</span>
+        <span id="1-1" class="normal">7</span>
+        <span id="1-2" class="normal">2</span>
+        <span id="1-3" class="normal">6</span>
+        <span id="1-4" class="normal">3</span>
+        <span id="1-5" class="normal">7</span>
+        <span id="1-6" class="normal">8</span>
+        <span id="1-7" class="normal">4</span>
+        <span id="1-8" class="normal">4</span>
+        <span id="1-9" class="normal">8</span>
+    </p>
+
+    <p><span id="2-0" class="normal">3</span>
+        <span id="2-1" class="normal">2</span>
+        <span id="2-2" class="normal">3</span>
+        <span id="2-3" class="normal">5</span>
+        <span id="2-4" class="normal">1</span>
+        <span id="2-5" class="normal">7</span>
+        <span id="2-6" class="normal">2</span>
+        <span id="2-7" class="normal">7</span>
+        <span id="2-8" class="normal">5</span>
+        <span id="2-9" class="normal">8</span>
+    </p>
+
+    <p><span id="3-0" class="normal">6</span>
+        <span id="3-1" class="normal">2</span>
+        <span id="3-2" class="normal">8</span>
+        <span id="3-3" class="normal">1</span>
+        <span id="3-4" class="normal">2</span>
+        <span id="3-5" class="normal">4</span>
+        <span id="3-6" class="normal">2</span>
+        <span id="3-7" class="normal">6</span>
+        <span id="3-8" class="normal">4</span>
+        <span id="3-9" class="normal">3</span>
+    </p>
+
+    <p><span id="4-0" class="normal">4</span>
+        <span id="4-1" class="normal">2</span>
+        <span id="4-2" class="normal">5</span>
+        <span id="4-3" class="normal">6</span>
+        <span id="4-4" class="normal">2</span>
+        <span id="4-5" class="normal">2</span>
+        <span id="4-6" class="normal">3</span>
+        <span id="4-7" class="normal">1</span>
+        <span id="4-8" class="normal">5</span>
+        <span id="4-9" class="normal">8</span>
+    </p>
+
+    <p><span id="5-0" class="normal">1</span>
+        <span id="5-1" class="normal">1</span>
+        <span id="5-2" class="normal">1</span>
+        <span id="5-3" class="normal">2</span>
+        <span id="5-4" class="normal">2</span>
+        <span id="5-5" class="normal">6</span>
+        <span id="5-6" class="normal">8</span>
+        <span id="5-7" class="normal">1</span>
+        <span id="5-8" class="normal">4</span>
+        <span id="5-9" class="normal">2</span>
+    </p>
+
+    <p><span id="6-0" class="normal">1</span>
+        <span id="6-1" class="normal">1</span>
+        <span id="6-2" class="normal">6</span>
+        <span id="6-3" class="normal">2</span>
+        <span id="6-4" class="normal">8</span>
+        <span id="6-5" class="normal">3</span>
+        <span id="6-6" class="normal">6</span>
+        <span id="6-7" class="normal">1</span>
+        <span id="6-8" class="normal">8</span>
+        <span id="6-9" class="normal">2</span>
+    </p>
+
+    <p><span id="7-0" class="normal">1</span>
+        <span id="7-1" class="normal">5</span>
+        <span id="7-2" class="normal">4</span>
+        <span id="7-3" class="normal">3</span>
+        <span id="7-4" class="normal">5</span>
+        <span id="7-5" class="normal">2</span>
+        <span id="7-6" class="normal">5</span>
+        <span id="7-7" class="normal">8</span>
+        <span id="7-8" class="normal">6</span>
+        <span id="7-9" class="normal">1</span>
+    </p>
+
+    <p><span id="8-0" class="normal">1</span>
+        <span id="8-1" class="normal">8</span>
+        <span id="8-2" class="normal">8</span>
+        <span id="8-3" class="normal">2</span>
+        <span id="8-4" class="normal">6</span>
+        <span id="8-5" class="normal">5</span>
+        <span id="8-6" class="normal">6</span>
+        <span id="8-7" class="normal">3</span>
+        <span id="8-8" class="normal">2</span>
+        <span id="8-9" class="normal">6</span>
+    </p>
+
+    <p><span id="9-0" class="normal">8</span>
+        <span id="9-1" class="normal">8</span>
+        <span id="9-2" class="normal">4</span>
+        <span id="9-3" class="normal">4</span>
+        <span id="9-4" class="normal">2</span>
+        <span id="9-5" class="normal">6</span>
+        <span id="9-6" class="normal">3</span>
+        <span id="9-7" class="normal">1</span>
+        <span id="9-8" class="normal">5</span>
+        <span id="9-9" class="normal">1</span>
+    </p>
+
+</div>
+</body>
+</html>

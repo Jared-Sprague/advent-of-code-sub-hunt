@@ -704,6 +704,49 @@ export default class AoC {
         consola.log('output length:', outputHTML);
     }
 
+    static generateDay11HTML(input) {
+        input = input.trim();
+        const lines = input.split('\n');
+        let outputHTML = `
+            <html lang="">
+            <head title="OctoFlash!">
+                <style>
+                    .flash {
+                        color: white;
+                        background: yellow;
+                    }
+                    .normal {
+                        color: white;
+                        background: #292929;
+                    }
+                    p { margin:0 }
+                    span { margin:0 }
+                </style>
+            </head>
+            <body>
+        `;
+
+        // generate HTML
+        for (const [i, line] of lines.entries()) {
+            const powers = line.split('');
+
+            outputHTML += `
+<p>`;
+            for (let [j, power] of powers.entries()) {
+                const nodeId = `${i}-${j}`;
+                power = parseInt(power);
+
+                outputHTML += `<span id="${nodeId}" class="unfilled">${power}</span>
+`;
+            }
+            outputHTML += `</p>
+`;
+        }
+
+        outputHTML += '</body></html>';
+        consola.log('output length:', outputHTML);
+    }
+
     // DAY 10
     static day10(input) {
         input = input.trim();
