@@ -1023,4 +1023,11 @@ export default class AoC {
 
         consola.info('After', STEPS_NUM, 'steps, total flashes:', totalFlashes);
     }
+
+    // DAY 12
+    static day12(input) {
+        const lines = input.trim().split('\n');
+
+        consola.info('Day 12');
+    }
 }
