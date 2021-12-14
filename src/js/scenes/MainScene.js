@@ -207,7 +207,7 @@ export default class MainScene extends Phaser.Scene {
         // this.gift11 = this.add.sprite(1120, 2070, 'gift-10');
         // this.gift11.setPipeline('Light2D');
         // this.gift11.angle = -7;
-        AoC.day11(this.day11Input);
+        // AoC.day11(this.day11Input);
 
         // DAY 12
         this.day12Input = this.cache.text.get('day12-input');
@@ -222,7 +222,14 @@ export default class MainScene extends Phaser.Scene {
         // this.gift13 = this.add.sprite(1120, 2070, 'gift-10');
         // this.gift13.setPipeline('Light2D');
         // this.gift13.angle = -7;
-        AoC.day13(this.day13Input);
+        // AoC.day13(this.day13Input);
+
+        // DAY 14
+        this.day14Input = this.cache.text.get('day14-input');
+        // this.gift13 = this.add.sprite(1120, 2070, 'gift-10');
+        // this.gift13.setPipeline('Light2D');
+        // this.gift13.angle = -7;
+        AoC.day14(this.day14Input);
 
         // Place Shipwreck and loot
         this.createShipwreckLoot();

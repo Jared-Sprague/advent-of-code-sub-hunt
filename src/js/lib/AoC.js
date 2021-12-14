@@ -839,7 +839,7 @@ export default class AoC {
                 chunkCharacters.unshift(firstBackChar, char);
 
 
-                while (j >= 0  && numOpening !== numClosing && numThisCharOpening !== numThisCharClosing) {
+                while (j >= 0 && numOpening !== numClosing && numThisCharOpening !== numThisCharClosing) {
                     const backChar = charArray[j];
                     chunkCharacters.unshift(backChar);
                     if (openingCharacters.includes(backChar)) {
@@ -1140,5 +1140,60 @@ export default class AoC {
             }
             return reversedX;
         }
+    }
+
+    // DAY 14
+    static day14(input) {
+        const lines = input.trim().split('\n');
+        const regEx = /(\w\w) -> (\w)/;
+        const insertionRules = {};
+        let polymerTemplate = lines[0];
+        let newPolymer = lines[0];
+        const NUM_STEPS = 40;
+        const elementCount = {};
+
+        // load input
+        for (const line of lines) {
+            const match = regEx.exec(line);
+
+            if (match) {
+                insertionRules[match[1]] = match[2];
+            }
+        }
+
+        for (let i = 0; i < NUM_STEPS; ++i) {
+            consola.log('Day 14 Step:', i);
+            polymerTemplate = newPolymer;
+            newPolymer = polymerTemplate[0]; // Start with first char of template
+            for (let j = 0; j < polymerTemplate.length - 1; ++j) {
+                const pair = polymerTemplate[j] + polymerTemplate[j + 1];
+                const element = insertionRules[pair];
+                newPolymer += element + polymerTemplate[j + 1];
+            }
+        }
+
+        // count elements
+        consola.log('Day 14 - counting elements');
+        for (const element of newPolymer) {
+            if (elementCount[element]) {
+                elementCount[element]++;
+            }
+            else {
+                elementCount[element] = 1;
+            }
+        }
+        const countsSortable = [];
+        for (const element in elementCount) {
+            if (Object.prototype.hasOwnProperty.call(elementCount, element)) {
+                countsSortable.push([element, elementCount[element]]);
+            }
+        }
+        countsSortable.sort(function(a, b) {
+            return a[1] - b[1];
+        });
+        const topElement = _.last(countsSortable);
+        const leastElement = countsSortable[0];
+
+        consola.info('Day 14 part 1 answer:', topElement[1] - leastElement[1]);
     }
 }
