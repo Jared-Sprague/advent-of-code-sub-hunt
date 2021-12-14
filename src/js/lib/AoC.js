@@ -1149,7 +1149,7 @@ export default class AoC {
         const insertionRules = {};
         let polymerTemplate = lines[0];
         let newPolymer = lines[0];
-        const NUM_STEPS = 40;
+        const NUM_STEPS = 20;
         const elementCount = {};
 
         // load input
@@ -1163,13 +1163,34 @@ export default class AoC {
 
         for (let i = 0; i < NUM_STEPS; ++i) {
             consola.log('Day 14 Step:', i);
+
+            console.time('saveTemplate' + i);
             polymerTemplate = newPolymer;
+            console.timeEnd('saveTemplate' + i);
+
+            console.time('initNewTemplate');
             newPolymer = polymerTemplate[0]; // Start with first char of template
+            console.timeEnd('initNewTemplate');
+
+            console.log('template length:', polymerTemplate.length);
+
+            console.time('loopOuter' + i);
             for (let j = 0; j < polymerTemplate.length - 1; ++j) {
+
+                console.time('pair' + i);
                 const pair = polymerTemplate[j] + polymerTemplate[j + 1];
+                console.timeEnd('pair' + i);
+
+                // console.time('lookup' + i);
                 const element = insertionRules[pair];
+                // console.timeEnd('lookup' + i);
+
+                // console.time('concat' + i);
                 newPolymer += element + polymerTemplate[j + 1];
+                // console.timeEnd('concat' + i);
+                // console.timeEnd('loop' + i);
             }
+            console.timeEnd('loopOuter' + i);
         }
 
         // count elements
