@@ -1026,8 +1026,119 @@ export default class AoC {
 
     // DAY 12
     static day12(input) {
-        const lines = input.trim().split('\n');
+        // const lines = input.trim().split('\n');
+        //
+        // consola.info('Day 12');
+    }
 
-        consola.info('Day 12');
+    // DAY 13
+    static day13(input) {
+        const lines = input.trim().split('\n');
+        const dotsRaw = [];
+        const regEx = /fold along ([xy])=(\d+)/;
+        const folds = [];
+        let maxY = 0;
+        let maxX = 0;
+
+        // Read in input
+        for (const line of lines) {
+            const dot = line.split(',');
+            const match = regEx.exec(line);
+
+            if (dot && dot.length === 2) {
+                const doxX = parseInt(dot[0]);
+                const dotY = parseInt(dot[1]);
+
+                if (doxX > maxX) {
+                    maxX = doxX;
+                }
+                if (dotY > maxY) {
+                    maxY = dotY;
+                }
+
+                dotsRaw.push({ x: doxX, y: dotY });
+            }
+            else if (match) {
+                const axis = match[1];
+                const value = parseInt(match[2]);
+                const fold = {};
+                fold.axis = axis;
+                fold.value = value;
+                folds.push(fold);
+            }
+        }
+
+        // Init the grid
+        const dots = new Array(maxY + 1).fill(0).map(() => new Array(maxX + 1).fill(0));
+        for (const dot of dotsRaw) {
+            dots[dot.y][dot.x] = 1;
+        }
+
+        // Do the folds
+        let currentGrid = _.clone(dots);
+        for (const fold of folds) {
+            if (fold.axis === 'y') {
+                // fold up
+                const slicedDotsBottom = currentGrid.slice(fold.value + 1);
+                const slicedDotsTop = currentGrid.slice(0, fold.value);
+                const mirrorUp = this.mirrorArray(slicedDotsBottom, fold.axis);
+                this.mergeArrays(slicedDotsTop, mirrorUp);
+                currentGrid = _.clone(slicedDotsTop);
+            }
+            else if (fold.axis === 'x') {
+                // fold left
+                const slicedDotsRight = [];
+                const slicedDotsLeft = [];
+                for (const row of currentGrid) {
+                    slicedDotsRight.push(row.slice(fold.value + 1));
+                    slicedDotsLeft.push(row.slice(0, fold.value));
+                }
+                const mirrorLeft = this.mirrorArray(slicedDotsRight, fold.axis);
+                this.mergeArrays(slicedDotsLeft, mirrorLeft);
+                currentGrid = _.clone(slicedDotsLeft);
+            }
+
+            consola.info('Dots after fold ', fold, ' dot count:', this.countDots(currentGrid));
+        }
+    }
+
+    static countDots(grid) {
+        let dotCount = 0;
+        for (const row of grid) {
+            for (const element of row) {
+                if (element > 0) {
+                    dotCount++;
+                }
+            }
+        }
+        return dotCount;
+    }
+
+    static mergeArrays(arrayA, arrayB) {
+        const xLength = arrayA[0].length;
+
+        // copy in folded values
+        for (let i = 0; i < arrayA.length; ++i) {
+            for (let j = 0; j < xLength; ++j) {
+                if (arrayB[i][j] > 0) {
+                    arrayA[i][j] = arrayB[i][j];
+                }
+            }
+        }
+
+        return arrayA;
+    }
+
+    static mirrorArray(arrayElements, axis) {
+        if (axis === 'y') {
+            return arrayElements.reverse();
+        }
+        else if (axis === 'x') {
+            const reversedX = [];
+            for (const row of arrayElements) {
+                reversedX.push(row.reverse());
+            }
+            return reversedX;
+        }
     }
 }
