@@ -1147,10 +1147,11 @@ export default class AoC {
         const lines = input.trim().split('\n');
         const regEx = /(\w\w) -> (\w)/;
         const insertionRules = {};
-        let polymerTemplate = lines[0];
-        let newPolymer = lines[0];
-        const NUM_STEPS = 20;
+        const polymerTemplate = lines[0];
+        const NUM_STEPS = 40;
         const elementCount = {};
+        let currentPairCount = {};
+        const firstElement = polymerTemplate[0];
 
         // load input
         for (const line of lines) {
@@ -1158,51 +1159,65 @@ export default class AoC {
 
             if (match) {
                 insertionRules[match[1]] = match[2];
+                currentPairCount[match[1]] = 0;
             }
+        }
+
+        // Initial pair count
+        for (let j = 0; j < polymerTemplate.length - 1; ++j) {
+            const pair = polymerTemplate[j] + polymerTemplate[j + 1];
+            currentPairCount[pair]++;
         }
 
         for (let i = 0; i < NUM_STEPS; ++i) {
             consola.log('Day 14 Step:', i);
 
-            console.time('saveTemplate' + i);
-            polymerTemplate = newPolymer;
-            console.timeEnd('saveTemplate' + i);
+            const newPairCount = {};
 
-            console.time('initNewTemplate');
-            newPolymer = polymerTemplate[0]; // Start with first char of template
-            console.timeEnd('initNewTemplate');
+            for (const pair in currentPairCount) {
+                if (Object.prototype.hasOwnProperty.call(currentPairCount, pair)) {
+                    const count = currentPairCount[pair];
+                    if (count > 0) {
+                        const insertElement = insertionRules[pair];
+                        const newPair1 = pair[0] + insertElement;
+                        const newPair2 = insertElement + pair[1];
 
-            console.log('template length:', polymerTemplate.length);
+                        // count the new pairs
+                        if (newPairCount[newPair1]) {
+                            newPairCount[newPair1] += count;
+                        }
+                        else {
+                            newPairCount[newPair1] = count;
+                        }
 
-            console.time('loopOuter' + i);
-            for (let j = 0; j < polymerTemplate.length - 1; ++j) {
-
-                console.time('pair' + i);
-                const pair = polymerTemplate[j] + polymerTemplate[j + 1];
-                console.timeEnd('pair' + i);
-
-                // console.time('lookup' + i);
-                const element = insertionRules[pair];
-                // console.timeEnd('lookup' + i);
-
-                // console.time('concat' + i);
-                newPolymer += element + polymerTemplate[j + 1];
-                // console.timeEnd('concat' + i);
-                // console.timeEnd('loop' + i);
+                        if (newPairCount[newPair2]) {
+                            newPairCount[newPair2] += count;
+                        }
+                        else {
+                            newPairCount[newPair2] = count;
+                        }
+                    }
+                }
             }
-            console.timeEnd('loopOuter' + i);
+
+            currentPairCount = _.clone(newPairCount);
         }
 
         // count elements
         consola.log('Day 14 - counting elements');
-        for (const element of newPolymer) {
-            if (elementCount[element]) {
-                elementCount[element]++;
-            }
-            else {
-                elementCount[element] = 1;
+        for (const pair in currentPairCount) {
+            if (Object.prototype.hasOwnProperty.call(currentPairCount, pair)) {
+                const element = pair[1];
+                if (elementCount[element]) {
+                    elementCount[element] += currentPairCount[pair];
+                }
+                else {
+                    elementCount[element] = currentPairCount[pair];
+                }
             }
         }
+        elementCount[firstElement]++;
+
         const countsSortable = [];
         for (const element in elementCount) {
             if (Object.prototype.hasOwnProperty.call(elementCount, element)) {
